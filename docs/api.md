@@ -17,7 +17,7 @@
     - 500 Internal Server Error：服务器错误
 - **响应体格式**：
   - 基础响应体格式：
-    - code: HTTP状态码
+    - code: 错误码
     - timestamp: 时间戳
   - 成功的响应体格式：
     - data: 返回的数据
@@ -40,10 +40,14 @@ POST /user/register
 **响应数据**：
 ```json
 {
-  "userId": "123456",
-  "username": "testuser",
-  "email": "test@example.com",
-  "token": "jwt.token.here"
+  "code": 200,
+  "timestamp": "2025-07-08T12:00:00Z",
+  "data": {
+    "userId": "123456",
+    "username": "testuser",
+    "email": "test@example.com",
+    "token": "jwt.token.here"
+  }
 }
 ```
 
@@ -61,10 +65,14 @@ POST /user/login
 **响应数据**：
 ```json
 {
-  "userId": "123456",
-  "username": "testuser",
-  "email": "test@example.com",
-  "token": "jwt.token.here"
+  "code": 200,
+  "timestamp": "2025-07-08T12:00:00Z",
+  "data": {
+    "userId": "123456",
+    "username": "testuser",
+    "email": "test@example.com",
+    "token": "jwt.token.here"
+  }
 }
 ```
 
@@ -80,9 +88,9 @@ DELETE /user/delete
 **响应数据**
 ```json
 {
-  "code": "200",
-  "message": "",
-  "data": null;
+  "code": 200,
+  "timestamp": "2025-07-08T12:00:00Z",
+  "data": null
 }
 ```
 
@@ -104,27 +112,31 @@ GET /prompts
 **响应数据**：
 ```json
 {
-  "total": 100,
-  "page": 1,
-  "size": 20,
-  "data": [
-    {
-      "id": "prompt1",
-      "title": "产品描述生成",
-      "description": "用于生成电商产品描述的提示词",
-      "content": "你是一个专业的电商文案撰写者...",
-      "category": "文案创作",
-      "tags": ["电商", "产品描述", "营销"],
-      "likes": 120,
-      "views": 500,
-      "rating": 4.8,
-      "creator": {
-        "id": "user1",
-        "username": "creator1"
-      },
-      "createTime": "2025-07-01T10:30:00Z"
-    }
-  ]
+  "code": 200,
+  "timestamp": "2025-07-08T12:00:00Z",
+  "data": {
+    "total": 100,
+    "page": 1,
+    "size": 20,
+    "items": [
+      {
+        "id": "prompt1",
+        "title": "产品描述生成",
+        "description": "用于生成电商产品描述的提示词",
+        "content": "你是一个专业的电商文案撰写者...",
+        "category": "文案创作",
+        "tags": ["电商", "产品描述", "营销"],
+        "likes": 120,
+        "views": 500,
+        "rating": 4.8,
+        "creator": {
+          "id": "user1",
+          "username": "creator1"
+        },
+        "createTime": "2025-07-01T10:30:00Z"
+      }
+    ]
+  }
 }
 ```
 
@@ -146,10 +158,14 @@ POST /prompts
 **响应数据**：
 ```json
 {
-  "id": "prompt1",
-  "title": "产品描述生成",
-  "createTime": "2025-07-01T10:30:00Z",
-  "creatorId": "user1"
+  "code": 201,
+  "timestamp": "2025-07-08T12:00:00Z",
+  "data": {
+    "id": "prompt1",
+    "title": "产品描述生成",
+    "createTime": "2025-07-01T10:30:00Z",
+    "creatorId": "user1"
+  }
 }
 ```
 
@@ -160,29 +176,33 @@ GET /prompts/{id}
 **响应数据**：
 ```json
 {
-  "id": "prompt1",
-  "title": "产品描述生成",
-  "description": "用于生成电商产品描述的提示词",
-  "content": "你是一个专业的电商文案撰写者...",
-  "category": "文案创作",
-  "tags": ["电商", "产品描述", "营销"],
-  "likes": 120,
-  "views": 500,
-  "rating": 4.8,
-  "creator": {
-    "id": "user1",
-    "username": "creator1"
-  },
-  "createTime": "2025-07-01T10:30:00Z",
-  "reviews": [
-    {
-      "userId": "user2",
-      "username": "reviewer1",
-      "comment": "非常实用的提示词，生成效果很好！",
-      "rating": 5,
-      "time": "2025-07-02T15:45:00Z"
-    }
-  ]
+  "code": 200,
+  "timestamp": "2025-07-08T12:00:00Z",
+  "data": {
+    "id": "prompt1",
+    "title": "产品描述生成",
+    "description": "用于生成电商产品描述的提示词",
+    "content": "你是一个专业的电商文案撰写者...",
+    "category": "文案创作",
+    "tags": ["电商", "产品描述", "营销"],
+    "likes": 120,
+    "views": 500,
+    "rating": 4.8,
+    "creator": {
+      "id": "user1",
+      "username": "creator1"
+    },
+    "createTime": "2025-07-01T10:30:00Z",
+    "reviews": [
+      {
+        "userId": "user2",
+        "username": "reviewer1",
+        "comment": "非常实用的提示词，生成效果很好！",
+        "rating": 5,
+        "time": "2025-07-02T15:45:00Z"
+      }
+    ]
+  }
 }
 ```
 
@@ -200,8 +220,12 @@ PUT /prompts/{id}
 **响应数据**：
 ```json
 {
-  "id": "prompt1",
-  "updateTime": "2025-07-03T09:15:00Z"
+  "code": 200,
+  "timestamp": "2025-07-08T12:00:00Z",
+  "data": {
+    "id": "prompt1",
+    "updateTime": "2025-07-03T09:15:00Z"
+  }
 }
 ```
 
@@ -212,7 +236,11 @@ DELETE /prompts/{id}
 **响应数据**：
 ```json
 {
-  "success": true
+  "code": 200,
+  "timestamp": "2025-07-08T12:00:00Z",
+  "data": {
+    "success": true
+  }
 }
 ```
 
