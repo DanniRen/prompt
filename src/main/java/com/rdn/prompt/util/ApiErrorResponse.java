@@ -1,11 +1,11 @@
 package com.rdn.prompt.util;
 
-public class ErrorResult extends BaseResult{
+public class ApiErrorResponse extends ApiBaseResponse {
     private static final long serialVersionUID = 1L;
 
     private String msg;
 
-    public ErrorResult(Integer code, String msg) {
+    public ApiErrorResponse(Integer code, String msg) {
         this.timestmap = System.currentTimeMillis();
         this.code = code;
         this.msg = msg;

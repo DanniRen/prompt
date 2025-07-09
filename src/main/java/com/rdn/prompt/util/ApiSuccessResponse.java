@@ -1,16 +1,16 @@
 package com.rdn.prompt.util;
 
-public class SuccessResult<T> extends BaseResult{
+public class ApiSuccessResponse<T> extends ApiBaseResponse {
 
     private static final long serialVersionUID = 1L;
 
     private T data;
 
-    public SuccessResult() {
+    public ApiSuccessResponse() {
         this(null);
     }
 
-    public SuccessResult(T data) {
+    public ApiSuccessResponse(T data) {
         this.timestmap = System.currentTimeMillis();
         this.code = 200;
         this.data = data;
