@@ -24,7 +24,7 @@ import java.util.List;
 public class UserServiceImpl implements UserService {
 
     @Resource
-    MongoTemplate mongoTemplate;
+    private MongoTemplate mongoTemplate;
 
 
 
@@ -40,10 +40,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ApiBaseResponse login(RegistryDTO userDTO) {
-        Query query = new Query(Criteria.where("username").is(userDTO.getUsername()).and("password").is(userDTO.getHashedPassword()));
+        Query query = new Query(Criteria.where("username").is(userDTO.getUsername()));
         User user = mongoTemplate.findOne(query, User.class);
         if(user == null){
            return ApiBaseResponse.error(ErrorCode.USER_NOT_FOUND);
+        }
+        if(!user.getPassword().equals(userDTO.getHashedPassword())){
+            return ApiBaseResponse.error(ErrorCode.INVALID_PASSWORD);
         }
 
         // 发放jwt token

@@ -1,5 +1,9 @@
 package com.rdn.prompt.entity.vo;
 
+import com.rdn.prompt.common.PromptStatus;
+import com.rdn.prompt.entity.Metadata;
+import com.rdn.prompt.entity.PromptTag;
+import com.rdn.prompt.entity.Review;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -7,27 +11,45 @@ import java.util.List;
 
 @Data
 public class PromptVO {
-    private String id;
-
+    // 提示词标题
     private String title;
 
+    // 功能用途描述
     private String description;
 
-    private String content;
+    // 元数据，不同类型的提示词差异化存储
+    private Metadata metadata;
 
-    private String category;
+    // 场景分类Name
+    private String sceneName;
 
-    private List<String> tagIds;
+    // 标签ID列表
+    private List<String> tagNames;
 
+    // 点赞数
     private Integer likes;
 
+    // 浏览数
     private Integer views;
 
+    // 收藏数
+    private Integer stars;
+
+    // 评分
     private Double rating;
 
-    private String creatorId;
+    // 使用次数
+    private Integer useCount;
 
-    private LocalDateTime createTime;
+    // 状态：0-待审核，1-已通过，2-已拒绝
+    private PromptStatus status;
 
-    private LocalDateTime updateTime;
+    // 是否公开
+    private Boolean isPublic;
+
+    // 创建者Name
+    private String creatorName;
+
+    // 评论列表
+    private List<Review> reviews;
 }

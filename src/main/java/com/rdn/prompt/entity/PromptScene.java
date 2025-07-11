@@ -15,19 +15,19 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Document(collection = "categories")
-public class Category {
+@Document(collection = "prompt_scenes")
+public class PromptScene {
     @Id
     private String id;
 
-    @NotBlank(message = "prompt类别名称")
+    @NotBlank(message = "prompt场景名称")
     private String name;
 
     private String description;
 
-    private LocalDateTime createTime;
-
-    private LocalDateTime updateTime;
+    private String parentId;        // 父场景ID（用于多级分类）
+    private Integer sort;           // 排序值
+    private Boolean isActive;       // 是否启用
 
     @Override
     public String toString() {

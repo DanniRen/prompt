@@ -1,22 +1,10 @@
-package com.rdn.prompt.entity;
+package com.rdn.prompt.entity.dto;
 
 import com.rdn.prompt.common.ReviewStatus;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
 
-@Document(collection = "prompt_reviews")
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
-public class Review {
-    @Id
+public class ReviewDTO {
     private String id;
 
     // 关联的提示词ID（外键，关联prompts集合）
@@ -38,8 +26,6 @@ public class Review {
     private String parentReviewId;
 
     private LocalDateTime createTime;
-
-    private LocalDateTime updateTime;
 
     // 状态：0-待审核，1-已通过，2-已删除（违规被删）
     private ReviewStatus status;

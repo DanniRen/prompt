@@ -25,6 +25,8 @@ public enum ErrorCode {
     PHONE_ALREADY_EXISTS(1004, "手机号已存在"),
     USER_DISABLED(1005, "用户已禁用"),
     USER_HAS_EXIST(1006, "用户已存在"),
+    USER_DELETE_NOT_ALLOWED(1007, "不允许删除该用户"),
+
 
     // 提示词相关(2000-2999)
     PROMPT_NOT_FOUND(2001, "提示词不存在"),
@@ -36,6 +38,7 @@ public enum ErrorCode {
     PROMPT_ACCESS_DENIED(2007, "无权限访问该提示词"),
     PROMPT_EXPORT_FAILED(2008, "提示词导出失败"),
     PROMPT_IMPORT_FAILED(2009, "提示词导入失败"),
+    PROMPT_UPDATE_FAILED(2009, "提示词更新失败"),
 
     // 大模型相关(3000-3999)
     MODEL_API_KEY_MISSING(3001, "大模型API密钥缺失"),
