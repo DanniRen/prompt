@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -24,10 +25,10 @@ public class PromptScene {
     private String name;
 
     private String description;
-
-    private String parentId;        // 父场景ID（用于多级分类）
     private Integer sort;           // 排序值
     private Boolean isActive;       // 是否启用
+    private LocalDateTime createTime;
+    private LocalDateTime updateTime;
 
     @Override
     public String toString() {

@@ -28,20 +28,20 @@ public class UserController {
     @Resource
     private UserService userService;
 
-    @ApiOperation(value = "用户登录")
+    @ApiOperation(value = "用户登录", notes = "用户登录")
     @PostMapping("/login")
     public ApiBaseResponse login(@RequestBody @Valid RegistryDTO userDTO) {
         return userService.login(userDTO);
     }
 
-    @ApiOperation(value = "用户注册")
+    @ApiOperation(value = "用户注册", notes = "用户注册")
     @PostMapping("/registry")
     public ApiBaseResponse registry(@RequestBody @Valid RegistryDTO userDTO) {
         return userService.register(userDTO);
     }
 
     @Permission(RoleEnum.ADMIN)
-    @ApiOperation(value = "根据id删除用户")
+    @ApiOperation(value = "根据id删除用户", notes = "根据id删除用户，仅有管理员有权限，并且不能删除自己")
     @DeleteMapping("/delete")
     public ApiBaseResponse deleteById(@RequestParam String id, HttpServletRequest request) {
         String userId = request.getAttribute("userId").toString();

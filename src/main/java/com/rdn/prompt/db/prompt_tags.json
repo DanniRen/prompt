@@ -1,0 +1,121 @@
+[
+  {
+    "name": "AI技术",
+    "description": "人工智能相关技术",
+    "type": 1,
+    "status": "APPROVED",
+    "creatorId": "6870e1d0df48f4f446debda1",
+    "createTime": { "$date": "2025-04-01T10:00:00Z" },
+    "updateTime": { "$date": "2025-04-01T10:00:00Z" }
+  },
+  {
+    "name": "内容生成",
+    "description": "用于生成各类内容的功能",
+    "type": 2,
+    "status": "APPROVED",
+    "creatorId": "6870e1d0df48f4f446debda1",
+    "createTime": { "$date": "2025-04-02T11:30:00Z" },
+    "updateTime": { "$date": "2025-04-02T11:30:00Z" }
+  },
+  {
+    "name": "电子商务",
+    "description": "电商行业相关应用",
+    "type": 3,
+    "status": "APPROVED",
+    "creatorId": "6870e1d0df48f4f446debda1",
+    "createTime": { "$date": "2025-04-03T14:15:00Z" },
+    "updateTime": { "$date": "2025-04-03T14:15:00Z" }
+  },
+  {
+    "name": "代码技术",
+    "description": "编程与代码相关技术",
+    "type": 1,
+    "status": "APPROVED",
+    "creatorId": "6870e1d0df48f4f446debda1",
+    "createTime": { "$date": "2025-04-04T09:45:00Z" },
+    "updateTime": { "$date": "2025-04-04T09:45:00Z" }
+  },
+  {
+    "name": "问题修复",
+    "description": "用于诊断和修复问题的功能",
+    "type": 2,
+    "status": "APPROVED",
+    "creatorId": "6870e1d0df48f4f446debda1",
+    "createTime": { "$date": "2025-04-05T16:20:00Z" },
+    "updateTime": { "$date": "2025-04-05T16:20:00Z" }
+  },
+  {
+    "name": "信息技术",
+    "description": "IT行业相关应用",
+    "type": 3,
+    "status": "APPROVED",
+    "creatorId": "6870e1d0df48f4f446debda1",
+    "createTime": { "$date": "2025-04-06T13:30:00Z" },
+    "updateTime": { "$date": "2025-04-06T13:30:00Z" }
+  },
+  {
+    "name": "规划功能",
+    "description": "用于生成规划和方案的功能",
+    "type": 2,
+    "status": "APPROVED",
+    "creatorId": "6870e1d0df48f4f446debda1",
+    "createTime": { "$date": "2025-04-07T10:15:00Z" },
+    "updateTime": { "$date": "2025-04-07T10:15:00Z" }
+  },
+  {
+    "name": "旅游行业",
+    "description": "旅游相关应用",
+    "type": 3,
+    "status": "APPROVED",
+    "creatorId": "6870e1d0df48f4f446debda1",
+    "createTime": { "$date": "2025-04-08T15:45:00Z" },
+    "updateTime": { "$date": "2025-04-08T15:45:00Z" }
+  },
+  {
+    "name": "数据分析",
+    "description": "数据处理与分析技术",
+    "type": 1,
+    "status": "APPROVED",
+    "creatorId": "6870e1d0df48f4f446debda1",
+    "createTime": { "$date": "2025-04-09T12:00:00Z" },
+    "updateTime": { "$date": "2025-04-09T12:00:00Z" }
+  },
+  {
+    "name": "分析功能",
+    "description": "用于数据分析和解读的功能",
+    "type": 2,
+    "status": "APPROVED",
+    "creatorId": "6870e1d0df48f4f446debda1",
+    "createTime": { "$date": "2025-04-10T14:30:00Z" },
+    "updateTime": { "$date": "2025-04-10T14:30:00Z" }
+  },
+  {
+    "name": "金融行业",
+    "description": "金融相关应用",
+    "type": 3,
+    "status": "APPROVED",
+    "creatorId": "6870e1d0df48f4f446debda1",
+    "createTime": { "$date": "2025-04-11T11:15:00Z" },
+    "updateTime": { "$date": "2025-04-11T11:15:00Z" }
+  },
+  {
+    
+    "name": "创意创作",
+    "description": "用于创意内容创作的功能",
+    "type": 2,
+    "status": "APPROVED",
+    "creatorId": "6870e1d0df48f4f446debda1",
+    "createTime": { "$date": "2025-04-12T09:00:00Z" },
+    "updateTime": { "$date": "2025-04-12T09:00:00Z" }
+  },
+  {
+    
+    "name": "教育行业",
+    "description": "教育相关应用",
+    "type": 3,
+    "status": "APPROVED",
+    "creatorId": "6870e1d0df48f4f446debda1",
+    "createTime": { "$date": "2025-04-13T16:30:00Z" },
+    "updateTime": { "$date": "2025-04-13T16:30:00Z" }
+  }
+]    

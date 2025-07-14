@@ -1,12 +1,8 @@
 package com.rdn.prompt.entity.vo;
 
 import com.rdn.prompt.common.PromptStatus;
-import com.rdn.prompt.entity.Metadata;
-import com.rdn.prompt.entity.PromptTag;
-import com.rdn.prompt.entity.Review;
 import lombok.Data;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -18,7 +14,7 @@ public class PromptVO {
     private String description;
 
     // 元数据，不同类型的提示词差异化存储
-    private Metadata metadata;
+    private String content;
 
     // 场景分类Name
     private String sceneName;
@@ -49,7 +45,4 @@ public class PromptVO {
 
     // 创建者Name
     private String creatorName;
-
-    // 评论列表
-    private List<Review> reviews;
 }

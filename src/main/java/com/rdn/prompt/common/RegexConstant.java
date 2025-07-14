@@ -8,7 +8,7 @@ public class RegexConstant {
     /**
      * 密码的格式
      */
-    public static final String PASSWORD_REGEX = "^[a-zA-Z0-9@$!%*?&]{6,32}$";
+    public static final String PASSWORD_REGEX = "^[a-zA-Z0-9@$!%*?&]{3,32}$";
 
     /**
      * 只能是字母、数字、下划线组成

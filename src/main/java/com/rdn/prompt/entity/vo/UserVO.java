@@ -14,7 +14,5 @@ public class UserVO {
 
     private String role;
 
-    private Boolean sex;
-
     private String token;
 }

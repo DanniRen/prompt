@@ -11,16 +11,16 @@ public enum RoleEnum {
     /**
      * 用户
      */
-    USER(1, "用户"),
+    USER(1, "User"),
     /**
      * 管理员
      */
-    ADMIN(2, "管理员"),
+    ADMIN(2, "Admin"),
 
     /**
      * 普通访客
      */
-    VISITOR(-99999, "普通访客"),
+    GUEST(-99999, "Guest"),
     ;
 
     private final Integer code;

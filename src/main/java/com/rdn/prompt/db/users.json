@@ -1,0 +1,20 @@
+[
+  {
+    "username": "user",
+    "email": "user@example.com",
+    "password": "$2a$12$uvFEtoY8rp2z4KBs.04l.uHhYUbOiFLChjnWb5pJo7r093G7Ju6TS",
+    "role": "USER",
+    "createTime": {"$date": "2025-07-11T10:30:00Z"},
+    "updateTime": {"$date": "2025-07-11T10:30:00Z"}
+  },
+  {
+    "username": "admin",
+    "email": "admin@example.com",
+    "password": "$2a$12$ITOFxMi11bSLrrNHqBeuEeRNva7GdSteNvE07.Ku93utenXIpiAWW",
+    "role": "ADMIN",
+    "createTime": {"$date": "2025-07-11T08:15:00Z"},
+    "updateTime": {"$date": "2025-07-11T14:45:00Z"}
+  }
+]
+
+

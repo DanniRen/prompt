@@ -8,11 +8,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.MongoId;
 
-import java.lang.reflect.Array;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @Document(collection = "prompts")
@@ -30,8 +27,9 @@ public class Prompt {
     // 功能用途描述
     private String description;
 
-    // 元数据，不同类型的提示词差异化存储
-    private Metadata metadata;
+    // 提示词内容
+    private String content;
+    
 
     // 场景分类ID
     private String sceneId;
@@ -62,9 +60,6 @@ public class Prompt {
 
     // 创建者Id
     private String creatorId;
-
-    // 评论列表
-    private List<Review> reviews;
 
     private LocalDateTime createTime;
 

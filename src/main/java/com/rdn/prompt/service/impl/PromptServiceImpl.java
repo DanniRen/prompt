@@ -1,24 +1,23 @@
 package com.rdn.prompt.service.impl;
 
+import com.mongodb.client.result.DeleteResult;
 import com.mongodb.client.result.UpdateResult;
 import com.rdn.prompt.common.ErrorCode;
 import com.rdn.prompt.common.PromptStatus;
 import com.rdn.prompt.entity.Prompt;
+import com.rdn.prompt.entity.PromptScene;
 import com.rdn.prompt.entity.PromptTag;
-import com.rdn.prompt.entity.Scene;
 import com.rdn.prompt.entity.User;
-import com.rdn.prompt.entity.dto.MetadataDTO;
 import com.rdn.prompt.entity.dto.PageResult;
 import com.rdn.prompt.entity.dto.PromptDTO;
 import com.rdn.prompt.entity.vo.PromptVO;
 import com.rdn.prompt.service.PromptService;
 import com.rdn.prompt.service.PromptTagService;
-import com.rdn.prompt.service.SceneService;
+import com.rdn.prompt.service.PromptSceneService;
 import com.rdn.prompt.service.UserService;
 import com.rdn.prompt.util.ApiBaseResponse;
 import jakarta.annotation.Resource;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -32,7 +31,6 @@ import org.springframework.util.StringUtils;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 @Service
@@ -47,7 +45,7 @@ public class PromptServiceImpl implements PromptService {
     private UserService userService;
 
     @Resource
-    private SceneService sceneService;
+    private PromptSceneService promptSceneService;
 
     @Resource
     private PromptTagService tagService;
@@ -55,7 +53,17 @@ public class PromptServiceImpl implements PromptService {
 
     @Override
     public ApiBaseResponse createPrompt(PromptDTO promptDTO, String userId) {
-        // todo: 检查场景和标签是否存在
+
+        PromptScene scene = promptSceneService.getById(promptDTO.getSceneId());
+        if (scene  == null) {
+            return ApiBaseResponse.error(ErrorCode.SCENE_NOT_FOUND);
+        }
+
+        List<PromptTag> promptTags = tagService.getListByIds(promptDTO.getTagIds());
+        if (promptTags == null || promptTags.isEmpty()) {
+            return ApiBaseResponse.error(ErrorCode.TAG_NOT_FOUND);
+        }
+        List<String> tagIds = promptTags.stream().map(PromptTag::getId).collect(Collectors.toList());
 
         Prompt prompt = modelMapper.map(promptDTO, Prompt.class);
         prompt.setCreatorId(userId);
@@ -66,6 +74,8 @@ public class PromptServiceImpl implements PromptService {
         prompt.setStars(0);
         prompt.setViews(0);
         prompt.setUseCount(0);
+        prompt.setSceneId(scene.getId());
+        prompt.setTagIds(tagIds);
 
         mongoTemplate.save(promptDTO);
         return ApiBaseResponse.success(prompt);
@@ -93,7 +103,19 @@ public class PromptServiceImpl implements PromptService {
     @Override
     public ApiBaseResponse deletePrompt(String promptId, String userId) {
         Prompt prompt = mongoTemplate.findById(promptId, Prompt.class);
-        return null;
+        if(prompt == null){
+            return ApiBaseResponse.error(ErrorCode.PROMPT_NOT_FOUND);
+        }
+
+        if(!prompt.getCreatorId().equals(userId)){
+            return ApiBaseResponse.error(ErrorCode.PROMPT_ACCESS_DENIED);
+        }
+
+        DeleteResult deleteResult = mongoTemplate.remove(prompt);
+        if(deleteResult.getDeletedCount() > 0){
+            return ApiBaseResponse.success();
+        }
+        return ApiBaseResponse.error(ErrorCode.PROMPT_DELETE_FAILED);
     }
 
     @Override
@@ -115,8 +137,7 @@ public class PromptServiceImpl implements PromptService {
 
         PromptVO promptVO = modelMapper.map(prompt, PromptVO.class);
 
-        // todo: 获取关联的场景的name和标签name
-        Scene scene = sceneService.getById(prompt.getSceneId());
+        PromptScene scene = promptSceneService.getById(prompt.getSceneId());
         if (scene != null) {
             promptVO.setSceneName(scene.getName());
         }
@@ -147,7 +168,7 @@ public class PromptServiceImpl implements PromptService {
         List<PromptVO> promptVOList = prompts.stream()
                 .map(p -> {
                     PromptVO vo = modelMapper.map(p, PromptVO.class);
-                    Scene scene = sceneService.getById(p.getSceneId());
+                    PromptScene scene = promptSceneService.getById(p.getSceneId());
                     if (scene != null) {
                         vo.setSceneName(scene.getName());
                     }
@@ -157,7 +178,7 @@ public class PromptServiceImpl implements PromptService {
     }
 
     @Override
-    public PageResult<PromptVO> searchPrompt(String keyword, String sceneId, List<String> tagIds, Integer promptType,
+    public PageResult<PromptVO> searchPrompt(String keyword, String sceneId, List<String> tagIds,
                                              String sortField, String sortOrder, Integer pageNum, Integer pageSize) {
 
         Query query = new Query();
@@ -165,7 +186,7 @@ public class PromptServiceImpl implements PromptService {
             // 实现对prompt标题、描述信息和内容的关键词模糊搜索
             query.addCriteria(Criteria.where("keyword").regex(keyword, "i")
                     .orOperator(Criteria.where("description").regex(keyword, "i"))
-                    .orOperator(Criteria.where("metadata.content").regex(keyword, "i")));
+                    .orOperator(Criteria.where("content").regex(keyword, "i")));
         }
 
         if(StringUtils.hasText(sceneId)){
@@ -173,9 +194,6 @@ public class PromptServiceImpl implements PromptService {
         }
         if(!CollectionUtils.isEmpty(tagIds)){
             query.addCriteria(Criteria.where("tagIds").all(tagIds));
-        }
-        if (promptType != null) {
-            query.addCriteria(Criteria.where("metadata.promptType").is(promptType));
         }
 
         // 设置排序
@@ -198,7 +216,7 @@ public class PromptServiceImpl implements PromptService {
         List<PromptVO> promptVOList = prompts.stream().map(p -> {
             PromptVO vo = modelMapper.map(p, PromptVO.class);
 
-            Scene scene = sceneService.getById(p.getSceneId());
+            PromptScene scene = promptSceneService.getById(p.getSceneId());
             if (scene != null) {
                 vo.setSceneName(scene.getName());
             }
@@ -242,7 +260,6 @@ public class PromptServiceImpl implements PromptService {
         Update update = new Update();
         update.set("title", updatedPrompt.getTitle());
         update.set("description", updatedPrompt.getDescription());
-        update.set("metadata", updatedPrompt.getMetadata());
         update.set("sceneId", updatedPrompt.getSceneId());
         update.set("tagIds", updatedPrompt.getTagIds());
         update.set("likes", updatedPrompt.getLikes());
@@ -253,7 +270,6 @@ public class PromptServiceImpl implements PromptService {
         update.set("status", updatedPrompt.getStatus());
         update.set("isPublic", updatedPrompt.getIsPublic());
         update.set("creatorId", updatedPrompt.getCreatorId());
-        update.set("reviews", updatedPrompt.getReviews());
         update.set("updateTime", LocalDateTime.now());
 
         return update;

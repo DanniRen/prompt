@@ -1,16 +1,12 @@
 package com.rdn.prompt.entity.dto;
 
 import com.rdn.prompt.common.PromptStatus;
-import com.rdn.prompt.entity.Metadata;
-import com.rdn.prompt.entity.Review;
 import lombok.Data;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
 public class PromptDTO {
-
     private String id;
 
     // 提示词标题
@@ -19,8 +15,8 @@ public class PromptDTO {
     // 功能用途描述
     private String description;
 
-    // 元数据，不同类型的提示词差异化存储
-    private MetadataDTO metadata;
+    // 提示词内容
+    private String content;
 
     // 场景分类ID
     private String sceneId;
@@ -51,8 +47,5 @@ public class PromptDTO {
 
     // 创建者Id
     private String creatorId;
-
-    // 评论列表
-    private List<Review> reviews;
 
 }

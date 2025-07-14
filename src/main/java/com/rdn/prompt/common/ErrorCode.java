@@ -39,6 +39,7 @@ public enum ErrorCode {
     PROMPT_EXPORT_FAILED(2008, "提示词导出失败"),
     PROMPT_IMPORT_FAILED(2009, "提示词导入失败"),
     PROMPT_UPDATE_FAILED(2009, "提示词更新失败"),
+    PROMPT_DELETE_FAILED(2010, "提示词删除失败"),
 
     // 大模型相关(3000-3999)
     MODEL_API_KEY_MISSING(3001, "大模型API密钥缺失"),
@@ -63,12 +64,11 @@ public enum ErrorCode {
     TEAM_PERMISSION_DENIED(5005, "团队权限不足"),
     TEAM_SPACE_QUOTA_EXCEEDED(5006, "团队空间配额已超出"),
 
-    // 支付相关(6000-6999)
-    PLAN_NOT_FOUND(6001, "套餐不存在"),
-    PAYMENT_FAILED(6002, "支付失败"),
-    SUBSCRIPTION_NOT_FOUND(6003, "订阅不存在"),
-    SUBSCRIPTION_EXPIRED(6004, "订阅已过期"),
-    INSUFFICIENT_CREDITS(6005, "积分不足"),
+    // 场景相关(6000-6999)
+    SCENE_NOT_FOUND(6001, "分类场景不存在"),
+
+    // 标签相关
+    TAG_NOT_FOUND(7001, "标签不存在"),
 
     // 文件相关(7000-7999)
     FILE_UPLOAD_FAILED(7001, "文件上传失败"),
@@ -81,6 +81,7 @@ public enum ErrorCode {
     CONFIG_NOT_FOUND(8001, "配置项不存在"),
     CONFIG_UPDATE_FAILED(8002, "配置更新失败"),
     CONFIG_VALIDATION_ERROR(8003, "配置验证错误"),
+
 
     // 第三方服务相关(9000-9999)
     THIRD_PARTY_SERVICE_ERROR(9001, "第三方服务错误"),

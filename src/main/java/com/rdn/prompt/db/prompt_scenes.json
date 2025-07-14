@@ -1,0 +1,47 @@
+[
+  {
+    "name": "电商场景",
+    "description": "用于电商领域的文案生成、产品推广等场景",
+    "parentId": null,
+    "sort": 1,
+    "isActive": true,
+    "createTime": { "$date": "2025-05-15T08:30:00Z" },
+    "updateTime": { "$date": "2025-05-15T08:30:00Z" }
+  },
+  {
+    "name": "开发场景",
+    "description": "针对程序员和开发者的代码辅助、问题解决等场景",
+    "parentId": null,
+    "sort": 2,
+    "isActive": true,
+    "createTime": { "$date": "2025-04-10T14:15:00Z" },
+    "updateTime": { "$date": "2025-04-10T14:15:00Z" }
+  },
+  {
+    "name": "旅游场景",
+    "description": "旅游规划、攻略生成、景点推荐等相关场景",
+    "parentId": null,
+    "sort": 3,
+    "isActive": true,
+    "createTime": { "$date": "2025-05-28T09:45:00Z" },
+    "updateTime": { "$date": "2025-05-28T09:45:00Z" }
+  },
+  {
+    "name": "金融场景",
+    "description": "财务分析、报表生成、投资建议等金融相关场景",
+    "parentId": null,
+    "sort": 4,
+    "isActive": false,
+    "createTime": { "$date": "2025-06-20T11:20:00Z" },
+    "updateTime": { "$date": "2025-07-01T15:30:00Z" }
+  },
+  {
+    "name": "教育场景",
+    "description": "教学辅助、内容创作、学习规划等教育相关场景",
+    "parentId": null,
+    "sort": 5,
+    "isActive": true,
+    "createTime": { "$date": "2025-05-05T13:00:00Z" },
+    "updateTime": { "$date": "2025-05-05T13:00:00Z" }
+  }
+]    

@@ -40,12 +40,14 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ApiBaseResponse login(RegistryDTO userDTO) {
+        log.info("登录的用户名: " + userDTO.getUsername() + ", 密码: " + userDTO.getPassword());
         Query query = new Query(Criteria.where("username").is(userDTO.getUsername()));
         User user = mongoTemplate.findOne(query, User.class);
         if(user == null){
            return ApiBaseResponse.error(ErrorCode.USER_NOT_FOUND);
         }
-        if(!user.getPassword().equals(userDTO.getHashedPassword())){
+
+        if(!userDTO.verifyPassword(user.getPassword())){
             return ApiBaseResponse.error(ErrorCode.INVALID_PASSWORD);
         }
 
@@ -54,6 +56,7 @@ public class UserServiceImpl implements UserService {
         UserVO userVO = new UserVO();
         BeanUtils.copyProperties(user,userVO);
         userVO.setToken(token);
+        userVO.setRole(user.getRole().getName());
 
         return ApiBaseResponse.success(userVO);
     }

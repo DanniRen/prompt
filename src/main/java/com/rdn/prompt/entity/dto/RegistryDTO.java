@@ -26,9 +26,9 @@ public class RegistryDTO {
     @Pattern(regexp = RegexConstant.EMAIL_REGEX, message = MessageConstant.PARAMS_FORMAT_ERROR)
     private String email;
 
-    @ApiModelProperty(value = "密码", notes = "8-32个字符，允许字母、数字和@$!%*?&", required = true)
+    @ApiModelProperty(value = "密码", notes = "3-32个字符，允许字母、数字和@$!%*?&", required = true)
     @NotNull(message = MessageConstant.PARAMS_NOT_NULL)
-    @Size(min = 6, max = 32, message = MessageConstant.PARAMS_LENGTH_REQUIRED)
+    @Size(min = 3, max = 32, message = MessageConstant.PARAMS_LENGTH_REQUIRED)
     @Pattern(regexp = RegexConstant.PASSWORD_REGEX, message = MessageConstant.PARAMS_FORMAT_ERROR)
     private String password;
 
@@ -38,5 +38,20 @@ public class RegistryDTO {
         }
         String hashpw = BCrypt.hashpw(password, BCrypt.gensalt(12));
         return hashpw;
+    }
+
+    public boolean verifyPassword(String hashpw) {
+        if (password == null || hashpw == null) {
+            return false;
+        }
+        return BCrypt.checkpw(password, hashpw);
+    }
+
+    public static void main(String[] args) {
+        RegistryDTO dto = new RegistryDTO();
+        dto.setUsername("user");
+        dto.setEmail("user@example.com");
+        dto.setPassword("user");
+        System.out.println(dto.getHashedPassword());
     }
 }
