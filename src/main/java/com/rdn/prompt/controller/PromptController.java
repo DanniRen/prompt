@@ -1,10 +1,12 @@
 package com.rdn.prompt.controller;
 
 import com.rdn.prompt.entity.Prompt;
+import com.rdn.prompt.entity.PromptVersion;
 import com.rdn.prompt.entity.dto.PageResult;
 import com.rdn.prompt.entity.dto.PromptDTO;
 import com.rdn.prompt.entity.vo.PromptVO;
 import com.rdn.prompt.service.PromptService;
+import com.rdn.prompt.service.PromptVersionService;
 import com.rdn.prompt.util.ApiBaseResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -23,6 +25,9 @@ public class PromptController {
 
     @Resource
     private PromptService promptService;
+
+    @Resource
+    private PromptVersionService versionService;
 
     @ApiOperation(value = "获取所有prompt", notes = "获取prompt列表")
     @GetMapping("/list")
@@ -117,6 +122,36 @@ public class PromptController {
     public ApiBaseResponse unstarPrompt(@PathVariable String id, HttpServletRequest request) {
         String userId = request.getAttribute("userId").toString();
         return promptService.unstarPrompt(id, userId);
+    }
+
+    // 版本控制相关接口
+    @ApiOperation(value = "获取prompt的所有版本", notes = "获取指定prompt的所有历史版本")
+    @GetMapping("/{id}/versions")
+    public ApiBaseResponse getPromptVersions(@PathVariable String id) {
+        List<PromptVersion> versions = versionService.getPromptVersions(id);
+        return ApiBaseResponse.success(versions);
+
+    }
+
+    @ApiOperation(value = "获取指定版本详情", notes = "获取prompt指定版本的详细信息")
+    @GetMapping("/{id}/versions/{version}")
+    public ApiBaseResponse getPromptVersion(@PathVariable String id, @PathVariable String version) {
+        PromptVersion promptVersion = versionService.getPromptVersionByName(id, version);
+        return ApiBaseResponse.success(promptVersion);
+    }
+
+    @ApiOperation(value = "版本回退", notes = "将prompt回退到指定版本")
+    @PostMapping("/{id}/restore/{version}")
+    public ApiBaseResponse restorePrompt(@PathVariable String id, @PathVariable String version, HttpServletRequest request) {
+        String userId = request.getAttribute("userId").toString();
+        return promptService.restore(id, version);
+    }
+
+    @ApiOperation(value = "获取版本历史", notes = "获取prompt的版本历史记录，包含版本号和修改时间")
+    @GetMapping("/{id}/version-history")
+    public ApiBaseResponse getVersionHistory(@PathVariable String id) {
+        List<PromptVersion> versions = versionService.getPromptVersions(id);
+        return ApiBaseResponse.success(versions);
     }
 
 }

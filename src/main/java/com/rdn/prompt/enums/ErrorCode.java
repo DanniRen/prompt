@@ -39,7 +39,9 @@ public enum ErrorCode {
     PROMPT_IMPORT_FAILED(2009, "提示词导入失败"),
     PROMPT_UPDATE_FAILED(2009, "提示词更新失败"),
     PROMPT_DELETE_FAILED(2010, "提示词删除失败"),
-
+    PROMPT_VERSION_FORMAT_ERROR(2011, "提示词版本格式不正确"),
+    PROMPT_VERSION_RESTORE_ERROR(2012, "提示词版本回退失败"),
+    PROMPT_VERSION_CREATE_FAILED(2013,"提示词版本创建失败"),
     // 大模型相关(3000-3999)
     MODEL_API_KEY_MISSING(3001, "大模型API密钥缺失"),
     MODEL_API_CALL_FAILED(3002, "大模型API调用失败"),

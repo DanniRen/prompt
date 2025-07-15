@@ -45,4 +45,7 @@ public class PromptVO {
 
     // 创建者Name
     private String creatorName;
+    
+    // 最新版本号
+    private String latestVersion;
 }

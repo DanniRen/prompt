@@ -2,21 +2,17 @@ package com.rdn.prompt.service.impl;
 
 import com.mongodb.client.result.DeleteResult;
 import com.mongodb.client.result.UpdateResult;
+import com.rdn.prompt.entity.*;
 import com.rdn.prompt.enums.ErrorCode;
 import com.rdn.prompt.enums.PromptStatus;
-import com.rdn.prompt.entity.Prompt;
-import com.rdn.prompt.entity.PromptScene;
-import com.rdn.prompt.entity.PromptTag;
-import com.rdn.prompt.entity.User;
 import com.rdn.prompt.entity.dto.PageResult;
 import com.rdn.prompt.entity.dto.PromptDTO;
 import com.rdn.prompt.entity.vo.PromptVO;
-import com.rdn.prompt.service.PromptService;
-import com.rdn.prompt.service.PromptTagService;
-import com.rdn.prompt.service.PromptSceneService;
-import com.rdn.prompt.service.UserService;
+import com.rdn.prompt.service.*;
 import com.rdn.prompt.util.ApiBaseResponse;
+import jakarta.annotation.PreDestroy;
 import jakarta.annotation.Resource;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -31,9 +27,12 @@ import org.springframework.util.StringUtils;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class PromptServiceImpl implements PromptService {
 
     @Resource
@@ -50,10 +49,15 @@ public class PromptServiceImpl implements PromptService {
     @Resource
     private PromptTagService tagService;
 
+    @Resource
+    private PromptVersionService versionService;
+
+    // 创建一个线程池来执行异步任务
+    private final ExecutorService executorService = Executors.newSingleThreadExecutor();
+
 
     @Override
     public ApiBaseResponse createPrompt(PromptDTO promptDTO, String userId) {
-
         PromptScene scene = promptSceneService.getById(promptDTO.getSceneId());
         if (scene  == null) {
             return ApiBaseResponse.error(ErrorCode.SCENE_NOT_FOUND);
@@ -77,7 +81,24 @@ public class PromptServiceImpl implements PromptService {
         prompt.setSceneId(scene.getId());
         prompt.setTagIds(tagIds);
 
-        mongoTemplate.save(promptDTO);
+        // 保存prompt
+        mongoTemplate.save(prompt);
+        
+        // 创建初始版本
+        PromptVersion initialVersion = versionService.createVersion(
+                prompt.getId(), 
+                "1.0.0", 
+                prompt.getContent(), 
+                userId
+        );
+        
+        if (initialVersion == null) {
+            log.error("创建初始版本失败：promptId=" + prompt.getId());
+            // 回滚prompt保存
+            mongoTemplate.remove(prompt);
+            return ApiBaseResponse.error(ErrorCode.PROMPT_VERSION_CREATE_FAILED);
+        }
+        
         return ApiBaseResponse.success(prompt);
     }
 
@@ -92,12 +113,29 @@ public class PromptServiceImpl implements PromptService {
         if(!prompt.getCreatorId().equals(userId)){
             return ApiBaseResponse.error(ErrorCode.PROMPT_ACCESS_DENIED);
         }
-        Query query = new Query().addCriteria(Criteria.where("_id").is(promptId));
-        UpdateResult updateResult = mongoTemplate.updateFirst(query, getUpdate(promptDTO), Prompt.class);
-        if(updateResult.getModifiedCount() > 0){
-            return ApiBaseResponse.success();
+        
+        // 创建新版本保存当前内容
+        PromptVersion newVersion = versionService.createVersion(
+                promptId, 
+                null, 
+                prompt.getContent(), 
+                userId
+        );
+        
+        if (newVersion == null) {
+            log.error("创建新版本失败：promptId=" + promptId);
+            return ApiBaseResponse.error(ErrorCode.PROMPT_VERSION_CREATE_FAILED);
         }
-        return ApiBaseResponse.error(ErrorCode.PROMPT_UPDATE_FAILED);
+        
+        // 更新prompt内容
+        Query query = new Query().addCriteria(Criteria.where("_id").is(promptId));
+        Update update = getUpdate(promptDTO);
+        
+        UpdateResult updateResult = mongoTemplate.updateFirst(query, update, Prompt.class);
+        if(updateResult.getModifiedCount() == 0){
+            return ApiBaseResponse.error(ErrorCode.PROMPT_UPDATE_FAILED);
+        }
+        return ApiBaseResponse.success();
     }
 
     @Override
@@ -111,11 +149,22 @@ public class PromptServiceImpl implements PromptService {
             return ApiBaseResponse.error(ErrorCode.PROMPT_ACCESS_DENIED);
         }
 
+        // 删除prompt本身
         DeleteResult deleteResult = mongoTemplate.remove(prompt);
-        if(deleteResult.getDeletedCount() > 0){
-            return ApiBaseResponse.success();
+        if(deleteResult.getDeletedCount() == 0){
+            return ApiBaseResponse.error(ErrorCode.PROMPT_DELETE_FAILED);
         }
-        return ApiBaseResponse.error(ErrorCode.PROMPT_DELETE_FAILED);
+        // 异步删除相关的版本信息
+        CompletableFuture.runAsync(() -> {
+            try {
+                versionService.deleteAllVersion(promptId);
+                log.info("异步删除prompt版本信息成功：promptId=" + promptId);
+            } catch (Exception e) {
+                log.error("异步删除prompt版本信息失败：promptId=" + promptId, e);
+            }
+        }, executorService);
+
+        return ApiBaseResponse.success();
     }
 
     @Override
@@ -132,8 +181,7 @@ public class PromptServiceImpl implements PromptService {
                     .matching(Criteria.where("_id").is(prompt.getId()))
                     .apply(new Update().inc("views", 1))
                     .first();
-        });
-
+        }, executorService);
 
         PromptVO promptVO = modelMapper.map(prompt, PromptVO.class);
 
@@ -154,8 +202,12 @@ public class PromptServiceImpl implements PromptService {
         }
         promptVO.setCreatorName(user.getUsername());
 
+        // 获取版本信息
+        String latestVersion = versionService.getLatestVersion(promptId);
+        promptVO.setLatestVersion(latestVersion);
+        
         // todo: 计算评分
-        return null;
+        return ApiBaseResponse.success(promptVO);
     }
 
     @Override
@@ -172,6 +224,11 @@ public class PromptServiceImpl implements PromptService {
                     if (scene != null) {
                         vo.setSceneName(scene.getName());
                     }
+                    
+                    // 添加最新版本信息
+                    String latestVersion = versionService.getLatestVersion(p.getId());
+                    vo.setLatestVersion(latestVersion);
+                    
                     return vo;
                 }).collect(Collectors.toList());
         return new PageResult<>(pageNum, pageSize, total, promptVOList);
@@ -220,6 +277,11 @@ public class PromptServiceImpl implements PromptService {
             if (scene != null) {
                 vo.setSceneName(scene.getName());
             }
+            
+            // 添加最新版本信息
+            String latestVersion = versionService.getLatestVersion(p.getId());
+            vo.setLatestVersion(latestVersion);
+            
             return vo;
         }).collect(Collectors.toList());
 
@@ -284,6 +346,47 @@ public class PromptServiceImpl implements PromptService {
     }
 
     @Override
+    public ApiBaseResponse restore(String promptId, String version) {
+        log.info("将当前prompt回退到指定版本：promptID为" + promptId + "，版本号：" + version);
+        PromptVersion promptVersion = versionService.getPromptVersionByName(promptId, version);
+        if (promptVersion == null) {
+            return ApiBaseResponse.error(ErrorCode.PROMPT_VERSION_RESTORE_ERROR);
+        }
+
+        Prompt prompt = mongoTemplate.findById(promptId, Prompt.class);
+        if (prompt == null) {
+            return ApiBaseResponse.error(ErrorCode.PROMPT_NOT_FOUND);
+        }
+
+        // 恢复到指定版本
+        Query query = new Query().addCriteria(Criteria.where("_id").is(promptId));
+        Update update = new Update()
+                .set("content", promptVersion.getContent())
+                .set("updateTime", LocalDateTime.now());
+        
+        UpdateResult updateResult = mongoTemplate.updateFirst(query, update, Prompt.class);
+        
+        if (updateResult.getModifiedCount() == 0) {
+            return ApiBaseResponse.error(ErrorCode.PROMPT_UPDATE_FAILED);
+        }
+
+        // 异步执行删除指定回退版本之后的版本信息
+        CompletableFuture.runAsync(() -> {
+            try {
+                List<PromptVersion> versionsToDelete = versionService.getPromptVersionsAfter(promptId, promptVersion.getModifyTime());
+                versionsToDelete.forEach(v -> {
+                    mongoTemplate.remove(v);
+                });
+                log.info("异步删除prompt指定回退版本之后的版本信息成功：promptId=" + promptId + "，回退到版本：version=" + version);
+            } catch (Exception e) {
+                log.error("异步删除prompt指定回退版本之后的版本信息失败：promptId=" + promptId + "，回退到版本：version=" + version, e);
+            }
+        }, executorService);
+
+        return ApiBaseResponse.success();
+    }
+
+    @Override
     public ApiBaseResponse addReview(String promptId, String userId, String comment, int rating) {
         return null;
     }
@@ -306,5 +409,10 @@ public class PromptServiceImpl implements PromptService {
         update.set("updateTime", LocalDateTime.now());
 
         return update;
+    }
+
+    @PreDestroy
+    public void shutdown() {
+        executorService.shutdown();
     }
 }

@@ -1,5 +1,6 @@
 package com.rdn.prompt.service;
 
+import com.rdn.prompt.entity.Prompt;
 import com.rdn.prompt.entity.dto.PageResult;
 import com.rdn.prompt.entity.dto.PromptDTO;
 import com.rdn.prompt.entity.vo.PromptVO;
@@ -28,5 +29,6 @@ public interface PromptService {
     ApiBaseResponse starPrompt(String promptId, String userId);
     ApiBaseResponse unstarPrompt(String promptId, String userId);
 
+    ApiBaseResponse restore(String promptId, String version);
     ApiBaseResponse addReview(String promptId, String userId, String comment, int rating);
 }
