@@ -1,15 +1,14 @@
-package com.rdn.prompt.common;
+package com.rdn.prompt.enums;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public enum PromptStatus {
+public enum ReviewStatus {
     PENDING_REVIEW(0),
     APPROVED(1),
-    REJECTED(2);
+    DELETED(2);
 
     private final Integer code;
-
 }

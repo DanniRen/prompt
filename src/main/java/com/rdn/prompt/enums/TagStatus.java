@@ -1,11 +1,11 @@
-package com.rdn.prompt.common;
+package com.rdn.prompt.enums;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public enum ReviewStatus {
+public enum TagStatus {
     PENDING_REVIEW(0),
     APPROVED(1),
     DELETED(2);

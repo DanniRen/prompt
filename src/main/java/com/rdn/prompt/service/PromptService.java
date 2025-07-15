@@ -23,6 +23,10 @@ public interface PromptService {
 
 
     ApiBaseResponse likePrompt(String promptId, String userId);
-
     ApiBaseResponse unlikePrompt(String promptId, String userId);
+
+    ApiBaseResponse starPrompt(String promptId, String userId);
+    ApiBaseResponse unstarPrompt(String promptId, String userId);
+
+    ApiBaseResponse addReview(String promptId, String userId, String comment, int rating);
 }

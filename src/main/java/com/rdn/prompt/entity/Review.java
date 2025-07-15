@@ -1,6 +1,6 @@
 package com.rdn.prompt.entity;
 
-import com.rdn.prompt.common.ReviewStatus;
+import com.rdn.prompt.enums.ReviewStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

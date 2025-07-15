@@ -1,6 +1,6 @@
 package com.rdn.prompt.util;
 
-import com.rdn.prompt.common.ErrorCode;
+import com.rdn.prompt.enums.ErrorCode;
 import com.rdn.prompt.common.MessageConstant;
 
 import java.io.Serializable;

@@ -2,8 +2,8 @@ package com.rdn.prompt.service.impl;
 
 import com.mongodb.client.result.DeleteResult;
 import com.mongodb.client.result.UpdateResult;
-import com.rdn.prompt.common.ErrorCode;
-import com.rdn.prompt.common.PromptStatus;
+import com.rdn.prompt.enums.ErrorCode;
+import com.rdn.prompt.enums.PromptStatus;
 import com.rdn.prompt.entity.Prompt;
 import com.rdn.prompt.entity.PromptScene;
 import com.rdn.prompt.entity.PromptTag;
@@ -237,8 +237,8 @@ public class PromptServiceImpl implements PromptService {
             return  ApiBaseResponse.error(ErrorCode.PROMPT_NOT_FOUND);
         }
 
-        Prompt prompt = mongoTemplate.findById(promptId, Prompt.class);
-        return ApiBaseResponse.success(prompt);
+//        Prompt prompt = mongoTemplate.findById(promptId, Prompt.class);
+        return ApiBaseResponse.success();
     }
 
     @Override
@@ -251,8 +251,41 @@ public class PromptServiceImpl implements PromptService {
             return  ApiBaseResponse.error(ErrorCode.PROMPT_NOT_FOUND);
         }
 
-        Prompt prompt = mongoTemplate.findById(promptId, Prompt.class);
-        return ApiBaseResponse.success(prompt);
+//        Prompt prompt = mongoTemplate.findById(promptId, Prompt.class);
+        return ApiBaseResponse.success();
+    }
+
+    @Override
+    public ApiBaseResponse starPrompt(String promptId, String userId) {
+        UpdateResult result = mongoTemplate.update(Prompt.class)
+                .matching(Criteria.where("_id").is(promptId))
+                .apply(new Update().inc("stars", -1))
+                .first();
+        if(result.getModifiedCount() == 0){
+            return  ApiBaseResponse.error(ErrorCode.PROMPT_NOT_FOUND);
+        }
+
+//        Prompt prompt = mongoTemplate.findById(promptId, Prompt.class);
+        return ApiBaseResponse.success();
+    }
+
+    @Override
+    public ApiBaseResponse unstarPrompt(String promptId, String userId) {
+        UpdateResult result = mongoTemplate.update(Prompt.class)
+                .matching(Criteria.where("_id").is(promptId))
+                .apply(new Update().inc("stars", 1))
+                .first();
+        if(result.getModifiedCount() == 0){
+            return  ApiBaseResponse.error(ErrorCode.PROMPT_NOT_FOUND);
+        }
+
+//        Prompt prompt = mongoTemplate.findById(promptId, Prompt.class);
+        return ApiBaseResponse.success();
+    }
+
+    @Override
+    public ApiBaseResponse addReview(String promptId, String userId, String comment, int rating) {
+        return null;
     }
 
     private Update getUpdate(PromptDTO updatedPrompt) {

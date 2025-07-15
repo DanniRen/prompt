@@ -1,12 +1,14 @@
 package com.rdn.prompt.entity;
 
-import com.rdn.prompt.common.TagStatus;
+import com.rdn.prompt.enums.TagStatus;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
+import org.springframework.data.mongodb.core.mapping.FieldType;
 
 import java.time.LocalDateTime;
 
@@ -22,6 +24,8 @@ public class PromptTag {
     private String name;            // 标签名称
     private String description;     // 标签描述
     private Integer type;           // 标签类型：1-技术栈，2-功能，3-行业等
+
+    @Field(targetType = FieldType.STRING)
     private TagStatus status;         // 状态：0-待审核，1-已通过
     private String creatorId;       // 创建者ID
     private LocalDateTime createTime;

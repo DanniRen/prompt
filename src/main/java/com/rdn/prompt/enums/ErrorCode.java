@@ -1,4 +1,4 @@
-package com.rdn.prompt.common;
+package com.rdn.prompt.enums;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -34,7 +34,6 @@ public enum ErrorCode {
     PROMPT_EMPTY_CONTENT(2003, "提示词内容不能为空"),
     PROMPT_VERSION_NOT_FOUND(2004, "提示词版本不存在"),
     PROMPT_CATEGORY_NOT_FOUND(2005, "提示词分类不存在"),
-    PROMPT_TAG_NOT_FOUND(2006, "提示词标签不存在"),
     PROMPT_ACCESS_DENIED(2007, "无权限访问该提示词"),
     PROMPT_EXPORT_FAILED(2008, "提示词导出失败"),
     PROMPT_IMPORT_FAILED(2009, "提示词导入失败"),
@@ -66,9 +65,16 @@ public enum ErrorCode {
 
     // 场景相关(6000-6999)
     SCENE_NOT_FOUND(6001, "分类场景不存在"),
+    SCENE_HAS_EXIST(6002, "分类场景已存在"),
+    SCENE_DELETE_FAILED(6003, "分类场景删除失败"),
+    SCENE_UPDATE_FAILED(6004, "分类场景更新失败"),
 
     // 标签相关
     TAG_NOT_FOUND(7001, "标签不存在"),
+    TAG_HAS_EXIST(7002, "标签已存在"),
+    TAG_DELETE_FAILED(7003, "标签删除失败"),
+    TAG_UPDATE_FAILED(7004, "标签更新失败"),
+    TAG_GET_FAILED(7004, "热门标签获取失败"),
 
     // 文件相关(7000-7999)
     FILE_UPLOAD_FAILED(7001, "文件上传失败"),

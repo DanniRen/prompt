@@ -1,7 +1,7 @@
 package com.rdn.prompt.entity;
 
 import com.alibaba.fastjson.JSON;
-import com.rdn.prompt.common.PromptStatus;
+import com.rdn.prompt.enums.PromptStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

@@ -25,7 +25,7 @@ public class PromptController {
     private PromptService promptService;
 
     @ApiOperation(value = "获取所有prompt", notes = "获取prompt列表")
-    @GetMapping("list")
+    @GetMapping("/list")
     public ApiBaseResponse getPromptList(@RequestParam(defaultValue = "1") Integer pageNum,
                                          @RequestParam(defaultValue = "10") Integer pageSize) {
         PageResult<PromptVO> promptList = promptService.getPromptList(pageNum, pageSize);
@@ -91,6 +91,32 @@ public class PromptController {
     public ApiBaseResponse unlikePrompt(@PathVariable String id, HttpServletRequest request) {
         String userId = request.getAttribute("userId").toString();
         return promptService.unlikePrompt(id, userId);
+    }
+
+    /**
+     *
+     * @param id
+     * @param request
+     * @return
+     */
+    @ApiOperation(value = "收藏", notes = "对某个prompt收藏")
+    @PostMapping("/{id}/star")
+    public ApiBaseResponse starPrompt(@PathVariable String id, HttpServletRequest request) {
+        String userId = request.getAttribute("userId").toString();
+        return promptService.starPrompt(id, userId);
+    }
+
+    /**
+     *
+     * @param id
+     * @param request
+     * @return
+     */
+    @ApiOperation(value = "取消收藏", notes = "对某个prompt取消收藏")
+    @PostMapping("/{id}/unstar")
+    public ApiBaseResponse unstarPrompt(@PathVariable String id, HttpServletRequest request) {
+        String userId = request.getAttribute("userId").toString();
+        return promptService.unstarPrompt(id, userId);
     }
 
 }

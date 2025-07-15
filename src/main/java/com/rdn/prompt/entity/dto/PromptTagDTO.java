@@ -1,7 +1,13 @@
 package com.rdn.prompt.entity.dto;
 
-import com.rdn.prompt.common.TagStatus;
+import com.rdn.prompt.enums.TagStatus;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class PromptTagDTO {
     private String id;
     private String name;            // 标签名称

@@ -1,7 +1,7 @@
 package com.rdn.prompt.auth;
 
 
-import com.rdn.prompt.common.ErrorCode;
+import com.rdn.prompt.enums.ErrorCode;
 import com.rdn.prompt.entity.User;
 import com.rdn.prompt.service.UserService;
 import com.rdn.prompt.util.JwtUtil;

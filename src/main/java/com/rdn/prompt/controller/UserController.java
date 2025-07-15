@@ -2,7 +2,7 @@ package com.rdn.prompt.controller;
 
 import com.rdn.prompt.auth.Permission;
 import com.rdn.prompt.auth.RoleEnum;
-import com.rdn.prompt.common.ErrorCode;
+import com.rdn.prompt.enums.ErrorCode;
 import com.rdn.prompt.entity.dto.RegistryDTO;
 import com.rdn.prompt.service.UserService;
 import com.rdn.prompt.util.ApiBaseResponse;

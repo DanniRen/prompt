@@ -1,7 +1,7 @@
 package com.rdn.prompt.service.impl;
 
 import com.rdn.prompt.auth.RoleEnum;
-import com.rdn.prompt.common.ErrorCode;
+import com.rdn.prompt.enums.ErrorCode;
 import com.rdn.prompt.entity.User;
 import com.rdn.prompt.entity.dto.RegistryDTO;
 import com.rdn.prompt.entity.vo.UserVO;

@@ -1,6 +1,6 @@
 package com.rdn.prompt.entity.dto;
 
-import com.rdn.prompt.common.ReviewStatus;
+import com.rdn.prompt.enums.ReviewStatus;
 
 import java.time.LocalDateTime;
 

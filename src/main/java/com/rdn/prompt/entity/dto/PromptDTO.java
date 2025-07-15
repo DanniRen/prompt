@@ -1,6 +1,6 @@
 package com.rdn.prompt.entity.dto;
 
-import com.rdn.prompt.common.PromptStatus;
+import com.rdn.prompt.enums.PromptStatus;
 import lombok.Data;
 
 import java.util.List;

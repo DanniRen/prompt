@@ -1,6 +1,5 @@
 package com.rdn.prompt.entity.dto;
 
-import com.rdn.prompt.common.ErrorCode;
 import com.rdn.prompt.common.MessageConstant;
 import com.rdn.prompt.common.RegexConstant;
 import io.swagger.annotations.ApiModel;
