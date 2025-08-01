@@ -1,8 +1,8 @@
-package com.rdn.prompt.common;
+package com.rdn.prompt.constants;
 
-public class RegexConstant {
-    public RegexConstant() {
-        throw  new IllegalAccessError("RegexConstant class");
+public class RegexConstants {
+    public RegexConstants() {
+        throw  new IllegalAccessError("RegexConstants class");
     }
 
     /**

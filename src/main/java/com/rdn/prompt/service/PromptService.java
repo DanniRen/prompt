@@ -19,8 +19,8 @@ public interface PromptService {
 
     PageResult<PromptVO> getPromptList(Integer pageNum, Integer pageSize);
 
-    PageResult<PromptVO> searchPrompt(String keyword, String sceneId, List<String> tagIds,
-                                      String sortField, String sortOrder, Integer pageNum, Integer pageSize);
+//    PageResult<PromptVO> searchPrompt(String keyword, String sceneId, List<String> tagIds,
+//                                      String sortField, String sortOrder, Integer pageNum, Integer pageSize);
 
 
     ApiBaseResponse likePrompt(String promptId, String userId);

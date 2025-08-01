@@ -5,6 +5,8 @@ import com.rdn.prompt.entity.PromptVersion;
 import com.rdn.prompt.entity.dto.PageResult;
 import com.rdn.prompt.entity.dto.PromptDTO;
 import com.rdn.prompt.entity.vo.PromptVO;
+import com.rdn.prompt.enums.ErrorCode;
+import com.rdn.prompt.service.ElasticService;
 import com.rdn.prompt.service.PromptService;
 import com.rdn.prompt.service.PromptVersionService;
 import com.rdn.prompt.util.ApiBaseResponse;
@@ -15,6 +17,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -28,6 +31,9 @@ public class PromptController {
 
     @Resource
     private PromptVersionService versionService;
+
+    @Resource
+    private ElasticService elasticService;
 
     @ApiOperation(value = "获取所有prompt", notes = "获取prompt列表")
     @GetMapping("/list")
@@ -65,16 +71,18 @@ public class PromptController {
     }
 
     @ApiOperation(value = "根据条件搜索prompt", notes = "根据多个条件搜索prompt，返回一个列表")
-    @GetMapping
+    @GetMapping("/search")
     public ApiBaseResponse searchPrompts(
             @RequestParam(required = false) String keyword,
-            @RequestParam(required = false) String sceneId,
-            @RequestParam(required = false) List<String> tagIds,
-            @RequestParam(required = false) String sortField,
-            @RequestParam(required = false) String sortOrder,
             @RequestParam(defaultValue = "1") Integer pageNum,
             @RequestParam(defaultValue = "10") Integer pageSize) {
-        PageResult<PromptVO> result = promptService.searchPrompt(keyword, sceneId, tagIds, sortField, sortOrder, pageNum, pageSize);
+        PageResult<PromptVO> result = null;
+        try {
+            result = elasticService.searchPrompt(keyword, pageNum, pageSize);
+        } catch (IOException e) {
+            log.error(STR."搜索prompt出错：\{e.getMessage()}");
+            return ApiBaseResponse.error(ErrorCode.PROMPT_NOT_FOUND);
+        }
         return ApiBaseResponse.success(result);
     }
 

@@ -28,6 +28,7 @@
     </scm>
     <properties>
         <java.version>21</java.version>
+        <elasticsearch.version>7.12.1</elasticsearch.version>
     </properties>
     <dependencies>
         <dependency>
@@ -122,6 +123,14 @@
             <artifactId>modelmapper</artifactId>
             <version>3.1.0</version> <!-- 使用最新稳定版本 -->
         </dependency>
+
+        <!--es依赖-->
+        <dependency>
+            <groupId>org.elasticsearch.client</groupId>
+            <artifactId>elasticsearch-rest-high-level-client</artifactId>
+            <version>7.12.1</version>
+        </dependency>
+
 
     </dependencies>
 

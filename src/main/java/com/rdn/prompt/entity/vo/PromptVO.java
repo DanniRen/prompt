@@ -7,19 +7,22 @@ import java.util.List;
 
 @Data
 public class PromptVO {
+
+    private String id;
+
     // 提示词标题
     private String title;
 
     // 功能用途描述
     private String description;
 
-    // 元数据，不同类型的提示词差异化存储
+    // 提示词内容
     private String content;
 
     // 场景分类Name
     private String sceneName;
 
-    // 标签ID列表
+    // 标签列表
     private List<String> tagNames;
 
     // 点赞数

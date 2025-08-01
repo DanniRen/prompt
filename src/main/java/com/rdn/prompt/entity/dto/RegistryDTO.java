@@ -1,7 +1,7 @@
 package com.rdn.prompt.entity.dto;
 
-import com.rdn.prompt.common.MessageConstant;
-import com.rdn.prompt.common.RegexConstant;
+import com.rdn.prompt.constants.MessageConstants;
+import com.rdn.prompt.constants.RegexConstants;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import jakarta.validation.constraints.NotNull;
@@ -15,20 +15,20 @@ import org.mindrot.jbcrypt.BCrypt;
 public class RegistryDTO {
 
     @ApiModelProperty(value = "用户名", notes = "最短3个字符，最长32个字符", required = true)
-    @NotNull(message = MessageConstant.PARAMS_NOT_NULL)
-    @Size(min = 3, max = 32, message = MessageConstant.PARAMS_LENGTH_REQUIRED)
-    @Pattern(regexp = RegexConstant.NUM_WORD_REG, message = MessageConstant.PARAMS_FORMAT_ERROR)
+    @NotNull(message = MessageConstants.PARAMS_NOT_NULL)
+    @Size(min = 3, max = 32, message = MessageConstants.PARAMS_LENGTH_REQUIRED)
+    @Pattern(regexp = RegexConstants.NUM_WORD_REG, message = MessageConstants.PARAMS_FORMAT_ERROR)
     private String username;
 
     @ApiModelProperty(value = "邮箱", required = true)
-    @NotNull(message = MessageConstant.PARAMS_NOT_NULL)
-    @Pattern(regexp = RegexConstant.EMAIL_REGEX, message = MessageConstant.PARAMS_FORMAT_ERROR)
+    @NotNull(message = MessageConstants.PARAMS_NOT_NULL)
+    @Pattern(regexp = RegexConstants.EMAIL_REGEX, message = MessageConstants.PARAMS_FORMAT_ERROR)
     private String email;
 
     @ApiModelProperty(value = "密码", notes = "3-32个字符，允许字母、数字和@$!%*?&", required = true)
-    @NotNull(message = MessageConstant.PARAMS_NOT_NULL)
-    @Size(min = 3, max = 32, message = MessageConstant.PARAMS_LENGTH_REQUIRED)
-    @Pattern(regexp = RegexConstant.PASSWORD_REGEX, message = MessageConstant.PARAMS_FORMAT_ERROR)
+    @NotNull(message = MessageConstants.PARAMS_NOT_NULL)
+    @Size(min = 3, max = 32, message = MessageConstants.PARAMS_LENGTH_REQUIRED)
+    @Pattern(regexp = RegexConstants.PASSWORD_REGEX, message = MessageConstants.PARAMS_FORMAT_ERROR)
     private String password;
 
     public String getHashedPassword() {

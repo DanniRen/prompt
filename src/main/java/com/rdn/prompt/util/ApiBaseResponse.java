@@ -1,7 +1,7 @@
 package com.rdn.prompt.util;
 
+import com.rdn.prompt.constants.MessageConstants;
 import com.rdn.prompt.enums.ErrorCode;
-import com.rdn.prompt.common.MessageConstant;
 
 import java.io.Serializable;
 
@@ -24,7 +24,7 @@ public abstract class ApiBaseResponse implements Serializable {
      * @return ApiSuccessResponse
      */
     public static ApiBaseResponse success() {
-        return new ApiSuccessResponse(MessageConstant.SUCCESS);
+        return new ApiSuccessResponse(MessageConstants.SUCCESS);
     }
 
     /**

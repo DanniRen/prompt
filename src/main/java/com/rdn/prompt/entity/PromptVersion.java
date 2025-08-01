@@ -1,9 +1,5 @@
 package com.rdn.prompt.entity;
 
-import com.rdn.prompt.common.MessageConstant;
-import com.rdn.prompt.common.RegexConstant;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
 import lombok.Builder;
 import lombok.Data;
 import org.springframework.data.annotation.Id;

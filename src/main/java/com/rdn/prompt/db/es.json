@@ -1,0 +1,63 @@
+{
+  "mappings": {
+    "properties": {
+      "id": {
+        "type": "keyword"
+      },
+      "title": {
+        "type": "text",
+        "analyzer": "ik_max_word"
+      },
+      "description": {
+        "type": "text",
+        "analyzer": "ik_max_word"
+      },
+      "content": {
+        "type": "text",
+        "analyzer": "ik_max_word"
+      },
+      "tagNames": {
+        "type": "text",
+        "analyzer": "ik_max_word"
+      },
+      "sceneName": {
+        "type": "text",
+        "analyzer": "ik_max_word"
+      },
+      "likes":{
+        "type": "integer",
+        "index": false
+      },
+      "views":{
+        "type": "integer",
+        "index": false
+      },
+      "stars":{
+        "type": "integer",
+        "index": false
+      },
+      "rating":{
+        "type": "double",
+        "index": false
+      },
+      "useCount":{
+        "type": "integer",
+        "index": false
+      },
+      "status": {
+        "type": "keyword"
+      },
+      "isPublic":{
+        "type": "boolean",
+        "index": false
+      },
+      "creatorName":{
+        "type": "keyword"
+      },
+      "latestVersion":{
+        "type": "keyword",
+        "index": false
+      }
+    }
+  }
+}

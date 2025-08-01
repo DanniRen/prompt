@@ -1,9 +1,9 @@
-package com.rdn.prompt.common;
+package com.rdn.prompt.constants;
 
-public class MessageConstant {
+public class MessageConstants {
 
-    private MessageConstant() {
-        throw new IllegalStateException("MessageConstant class");
+    private MessageConstants() {
+        throw new IllegalStateException("MessageConstants class");
     }
 
     public static final String PARAMS_NOT_NULL = "参数是必需的！";

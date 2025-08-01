@@ -55,6 +55,9 @@ public class PromptServiceImpl implements PromptService {
     // 创建一个线程池来执行异步任务
     private final ExecutorService executorService = Executors.newSingleThreadExecutor();
 
+    @Resource
+    private TaskExecuteService taskExecuteService;
+
 
     @Override
     public ApiBaseResponse createPrompt(PromptDTO promptDTO, String userId) {
@@ -98,8 +101,15 @@ public class PromptServiceImpl implements PromptService {
             mongoTemplate.remove(prompt);
             return ApiBaseResponse.error(ErrorCode.PROMPT_VERSION_CREATE_FAILED);
         }
+
+        PromptVO promptVO = modelMapper.map(prompt, PromptVO.class);
+        promptVO.setSceneName(scene.getName());
+        List<String> tagNames = promptTags.stream().map(PromptTag::getName).collect(Collectors.toList());
+        promptVO.setTagNames(tagNames);
+
+        taskExecuteService.execute(promptVO);
         
-        return ApiBaseResponse.success(prompt);
+        return ApiBaseResponse.success(promptVO);
     }
 
     @Override
@@ -234,59 +244,59 @@ public class PromptServiceImpl implements PromptService {
         return new PageResult<>(pageNum, pageSize, total, promptVOList);
     }
 
-    @Override
-    public PageResult<PromptVO> searchPrompt(String keyword, String sceneId, List<String> tagIds,
-                                             String sortField, String sortOrder, Integer pageNum, Integer pageSize) {
-
-        Query query = new Query();
-        if(StringUtils.hasText(keyword)){
-            // 实现对prompt标题、描述信息和内容的关键词模糊搜索
-            query.addCriteria(Criteria.where("keyword").regex(keyword, "i")
-                    .orOperator(Criteria.where("description").regex(keyword, "i"))
-                    .orOperator(Criteria.where("content").regex(keyword, "i")));
-        }
-
-        if(StringUtils.hasText(sceneId)){
-            query.addCriteria(Criteria.where("sceneId").is(sceneId));
-        }
-        if(!CollectionUtils.isEmpty(tagIds)){
-            query.addCriteria(Criteria.where("tagIds").all(tagIds));
-        }
-
-        // 设置排序
-        Sort sort = Sort.by(Sort.Direction.DESC, "createTime"); // 默认按创建时间倒序
-        if (StringUtils.hasText(sortField)) {
-            Sort.Direction direction = Sort.Direction.ASC;
-            if ("desc".equalsIgnoreCase(sortOrder)) {
-                direction = Sort.Direction.DESC;
-            }
-            sort = Sort.by(direction, sortField);
-        }
-        query.with(sort);
-
-        // 分页查询
-        long total = mongoTemplate.count(query, Prompt.class);
-        query.skip((long) (pageNum - 1) * pageSize).limit(pageSize);
-
-        List<Prompt> prompts = mongoTemplate.find(query, Prompt.class);
-
-        List<PromptVO> promptVOList = prompts.stream().map(p -> {
-            PromptVO vo = modelMapper.map(p, PromptVO.class);
-
-            PromptScene scene = promptSceneService.getById(p.getSceneId());
-            if (scene != null) {
-                vo.setSceneName(scene.getName());
-            }
-            
-            // 添加最新版本信息
-            String latestVersion = versionService.getLatestVersion(p.getId());
-            vo.setLatestVersion(latestVersion);
-            
-            return vo;
-        }).collect(Collectors.toList());
-
-        return new PageResult<>(pageNum, pageSize, total, promptVOList);
-    }
+//    @Override
+//    public PageResult<PromptVO> searchPrompt(String keyword, String sceneId, List<String> tagIds,
+//                                             String sortField, String sortOrder, Integer pageNum, Integer pageSize) {
+//
+//        Query query = new Query();
+//        if(StringUtils.hasText(keyword)){
+//            // 实现对prompt标题、描述信息和内容的关键词模糊搜索
+//            query.addCriteria(Criteria.where("keyword").regex(keyword, "i")
+//                    .orOperator(Criteria.where("description").regex(keyword, "i"))
+//                    .orOperator(Criteria.where("content").regex(keyword, "i")));
+//        }
+//
+//        if(StringUtils.hasText(sceneId)){
+//            query.addCriteria(Criteria.where("sceneId").is(sceneId));
+//        }
+//        if(!CollectionUtils.isEmpty(tagIds)){
+//            query.addCriteria(Criteria.where("tagIds").all(tagIds));
+//        }
+//
+//        // 设置排序
+//        Sort sort = Sort.by(Sort.Direction.DESC, "createTime"); // 默认按创建时间倒序
+//        if (StringUtils.hasText(sortField)) {
+//            Sort.Direction direction = Sort.Direction.ASC;
+//            if ("desc".equalsIgnoreCase(sortOrder)) {
+//                direction = Sort.Direction.DESC;
+//            }
+//            sort = Sort.by(direction, sortField);
+//        }
+//        query.with(sort);
+//
+//        // 分页查询
+//        long total = mongoTemplate.count(query, Prompt.class);
+//        query.skip((long) (pageNum - 1) * pageSize).limit(pageSize);
+//
+//        List<Prompt> prompts = mongoTemplate.find(query, Prompt.class);
+//
+//        List<PromptVO> promptVOList = prompts.stream().map(p -> {
+//            PromptVO vo = modelMapper.map(p, PromptVO.class);
+//
+//            PromptScene scene = promptSceneService.getById(p.getSceneId());
+//            if (scene != null) {
+//                vo.setSceneName(scene.getName());
+//            }
+//
+//            // 添加最新版本信息
+//            String latestVersion = versionService.getLatestVersion(p.getId());
+//            vo.setLatestVersion(latestVersion);
+//
+//            return vo;
+//        }).collect(Collectors.toList());
+//
+//        return new PageResult<>(pageNum, pageSize, total, promptVOList);
+//    }
 
 
     @Override

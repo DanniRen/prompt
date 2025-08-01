@@ -1,8 +1,6 @@
 package com.rdn.prompt.service.impl;
 
-import com.rdn.prompt.common.MessageConstant;
-import com.rdn.prompt.common.RegexConstant;
-import com.rdn.prompt.entity.Prompt;
+import com.rdn.prompt.constants.RegexConstants;
 import com.rdn.prompt.entity.PromptVersion;
 import com.rdn.prompt.enums.ErrorCode;
 import com.rdn.prompt.service.PromptVersionService;
@@ -41,7 +39,7 @@ public class PromptVersionServiceImpl implements PromptVersionService {
     @Override
     public PromptVersion getPromptVersionByName(String promptId, String version) {
 
-        if(version==null || !version.matches(RegexConstant.VERSION_REGEX)){
+        if(version==null || !version.matches(RegexConstants.VERSION_REGEX)){
             log.error("根据版本号获取相应的版本信息：promptId为"+ promptId + "：" + ErrorCode.PROMPT_VERSION_FORMAT_ERROR.getMessage());
             return null;
         }
@@ -76,7 +74,7 @@ public class PromptVersionServiceImpl implements PromptVersionService {
             version = incrementVersion(getLatestVersion(promptId));
         }
 
-        if(!version.matches(RegexConstant.VERSION_REGEX)){
+        if(!version.matches(RegexConstants.VERSION_REGEX)){
             log.error("创建新版本号：" + ErrorCode.PROMPT_VERSION_FORMAT_ERROR.getMessage());
             return null;
         }
