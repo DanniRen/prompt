@@ -131,6 +131,21 @@
             <version>7.12.1</version>
         </dependency>
 
+        <!-- Chroma向量存储 -->
+        <dependency>
+            <groupId>org.springframework.ai</groupId>
+            <artifactId>spring-ai-starter-vector-store-chroma</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+
+        <!--智谱Embedding模型-->
+        <dependency>
+            <groupId>org.springframework.ai</groupId>
+            <artifactId>spring-ai-starter-model-zhipuai</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+
+
 
     </dependencies>
 

@@ -178,10 +178,10 @@ public class PromptServiceImpl implements PromptService {
     }
 
     @Override
-    public ApiBaseResponse getPromptDetial(String promptId) {
+    public PromptVO getPromptDetial(String promptId) {
         Prompt prompt = mongoTemplate.findById(promptId, Prompt.class);
         if(prompt == null){
-            return ApiBaseResponse.error(ErrorCode.PROMPT_NOT_FOUND);
+            return null;
         }
 
         // 异步处理 增加浏览量
@@ -208,7 +208,7 @@ public class PromptServiceImpl implements PromptService {
 
         User user = userService.getById(prompt.getCreatorId());
         if(user == null){
-            return ApiBaseResponse.error(ErrorCode.USER_NOT_FOUND);
+            return null;
         }
         promptVO.setCreatorName(user.getUsername());
 
@@ -217,7 +217,7 @@ public class PromptServiceImpl implements PromptService {
         promptVO.setLatestVersion(latestVersion);
         
         // todo: 计算评分
-        return ApiBaseResponse.success(promptVO);
+        return promptVO;
     }
 
     @Override
@@ -242,6 +242,16 @@ public class PromptServiceImpl implements PromptService {
                     return vo;
                 }).collect(Collectors.toList());
         return new PageResult<>(pageNum, pageSize, total, promptVOList);
+    }
+
+    @Override
+    public List<Prompt> getAllPrompts() {
+        return mongoTemplate.findAll(Prompt.class);
+    }
+
+    @Override
+    public Prompt getPromptById(String promptId) {
+        return mongoTemplate.findById(promptId, Prompt.class);
     }
 
 //    @Override

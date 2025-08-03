@@ -15,9 +15,12 @@ public interface PromptService {
 
     ApiBaseResponse deletePrompt(String promptId, String userId);
 
-    ApiBaseResponse getPromptDetial(String promptId);
+    PromptVO getPromptDetial(String promptId);
 
     PageResult<PromptVO> getPromptList(Integer pageNum, Integer pageSize);
+
+    List<Prompt> getAllPrompts();
+    Prompt getPromptById(String promptId);
 
 //    PageResult<PromptVO> searchPrompt(String keyword, String sceneId, List<String> tagIds,
 //                                      String sortField, String sortOrder, Integer pageNum, Integer pageSize);

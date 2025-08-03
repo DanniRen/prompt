@@ -50,12 +50,14 @@ public enum ErrorCode {
     MODEL_NOT_SUPPORTED(3005, "不支持的大模型"),
     MODEL_PARAMETER_ERROR(3006, "大模型参数错误"),
     MODEL_RESPONSE_PARSING_ERROR(3007, "大模型响应解析错误"),
+    EMBEDDING_GENERATE_ERROR(3008, "向量化失败"),
 
     // 向量数据库相关(4000-4999)
     VECTOR_DB_CONNECTION_FAILED(4001, "向量数据库连接失败"),
     VECTOR_EMBEDDING_FAILED(4002, "向量嵌入失败"),
     VECTOR_SEARCH_FAILED(4003, "向量搜索失败"),
     VECTOR_INDEX_CREATION_FAILED(4004, "向量索引创建失败"),
+
 
     // 团队协作相关(5000-5999)
     TEAM_NOT_FOUND(5001, "团队不存在"),

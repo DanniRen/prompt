@@ -9,11 +9,14 @@ import com.rdn.prompt.enums.ErrorCode;
 import com.rdn.prompt.service.ElasticService;
 import com.rdn.prompt.service.PromptService;
 import com.rdn.prompt.service.PromptVersionService;
+import com.rdn.prompt.service.SearchService;
 import com.rdn.prompt.util.ApiBaseResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Max;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
@@ -35,6 +38,9 @@ public class PromptController {
     @Resource
     private ElasticService elasticService;
 
+    @Resource
+    private SearchService searchService;
+
     @ApiOperation(value = "获取所有prompt", notes = "获取prompt列表")
     @GetMapping("/list")
     public ApiBaseResponse getPromptList(@RequestParam(defaultValue = "1") Integer pageNum,
@@ -53,7 +59,11 @@ public class PromptController {
     @ApiOperation(value = "获取prompt详情", notes = "获取prompt详情")
     @GetMapping("/{id}")
     public ApiBaseResponse getPromptDetail(@PathVariable String id) {
-        return promptService.getPromptDetial(id);
+        PromptVO promptVO = promptService.getPromptDetial(id);
+        if (promptVO == null) {
+            return ApiBaseResponse.error(ErrorCode.PROMPT_NOT_FOUND);
+        }
+        return ApiBaseResponse.success(promptVO);
     }
 
     @ApiOperation(value = "更新prompt", notes = "更新prompt")
@@ -80,10 +90,20 @@ public class PromptController {
         try {
             result = elasticService.searchPrompt(keyword, pageNum, pageSize);
         } catch (IOException e) {
-            log.error(STR."搜索prompt出错：\{e.getMessage()}");
+            log.error("搜索prompt出错：" + e.getMessage());
             return ApiBaseResponse.error(ErrorCode.PROMPT_NOT_FOUND);
         }
         return ApiBaseResponse.success(result);
+    }
+
+    @ApiOperation(value = "语义检索", notes = "根据用户输入的语义信息检索相似的prompt，返回一个列表")
+    @PostMapping("/search/semantic")
+    public ApiBaseResponse semanticSearch(
+            @Valid @RequestBody String query,
+            @RequestParam(defaultValue = "10") @Max(50) int topK
+    ){
+        List<PromptVO> promptVOList = searchService.semanticSearch(query, topK);
+        return ApiBaseResponse.success(promptVOList);
     }
 
     @ApiOperation(value = "点赞", notes = "对某个prompt点赞")
