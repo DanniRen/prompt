@@ -28,7 +28,7 @@ public class EmbeddingGenerator {
     public float[] generate(String text){
         try {
             EmbeddingResponse embeddingResponse = this.embeddingModel.embedForResponse(List.of(text));
-            log.info("用户输入Embedding完成！向量化后的数据为" + embeddingResponse.getResult());
+            log.info("Embedding完成！向量化后的数据为" + embeddingResponse.getResult());
             return embeddingResponse.getResult().getOutput();
         } catch (Exception e) {
             log.error("生成Embedding失败", e);

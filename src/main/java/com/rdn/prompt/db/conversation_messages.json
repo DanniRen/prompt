@@ -1,0 +1,54 @@
+{
+  $jsonSchema: {
+    bsonType: 'object',
+    description: '存储与大模型每轮对话的详细信息',
+    required: [
+      '_id',
+      'sessionId',
+      'userInput',
+      'modelResponse'
+    ],
+    properties: {
+      _id: {
+        bsonType: 'objectId',
+        description: '每轮对话的唯一标识，自动生成'
+      },
+      sessionId: {
+        bsonType: 'string',
+        description: '对话关联的会话Id'
+      },
+      turn: {
+        bsonType: 'string',
+        description: '对话的轮次数'
+      },
+      userInput: {
+        bsonType: 'string',
+        description: '用户该轮对话输入的信息'
+      },
+      modelResponse: {
+        bsonType: 'string',
+        description: '模型该轮的回复'
+      },
+      createTime: {
+        bsonType: 'date',
+        description: '对话创建时间，记录创建时刻的时间戳'
+      },
+      responseTime: {
+        bsonType: 'long',
+        description: '该轮对话的响应时间'
+      },
+      tokenCount: {
+        bsonType: 'int',
+        description: '该轮对话消耗的token数'
+      },
+      rating: {
+        bsonType: 'int',
+        "description": '用户对该轮对话的评分'
+      },
+      history: {
+        bsonType: 'string',
+        "description": '历史对话的摘要'
+      }
+    }
+  }
+}

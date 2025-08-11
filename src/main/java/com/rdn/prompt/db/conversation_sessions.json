@@ -1,0 +1,62 @@
+{
+  $jsonSchema: {
+    bsonType: 'object',
+    description: '存储与大模型对话的会话信息',
+    required: [
+      '_id',
+      'userId',
+      'promptId',
+      'modelProvider'
+    ],
+    properties: {
+      _id: {
+        bsonType: 'string',
+        description: '会话的唯一标识，使用uuid自动生成'
+      },
+      userId: {
+        bsonType: 'string',
+        description: '会话拥有者，和users文档相关联'
+      },
+      promptId: {
+        bsonType: 'string',
+        description: '会话用于测试的promptId，和prompts文档相关联'
+      },
+      title: {
+        bsonType: 'string',
+        description: '会话的标题'
+      },
+      modelProvider: {
+        bsonType: 'string',
+        description: '模型提供商'
+      },
+      isActive: {
+        bsonType: 'bool',
+        description: '标记会话是否活跃，true表示活跃，false表示已结束会话'
+      },
+      createTime: {
+        bsonType: 'date',
+        description: '会话创建时间，记录创建时刻的时间戳'
+      },
+      updateTime: {
+        bsonType: 'date',
+        description: '会话更新时间，每次修改时更新该时间戳'
+      },
+      lastActiveTime: {
+        bsonType: 'date',
+        description: '会话最后活跃的时间，每次结束会话时更新该时间戳'
+      },
+      totalTurns: {
+        bsonType: 'int',
+        "description": '对话的总轮次'
+      },
+      totalTokenCount: {
+        bsonType: 'int',
+        "description": '总token消耗'
+      },
+      contextSummary: {
+        bsonType: 'string',
+        "description": '对话的上下文摘要，每三轮生成一次'
+      }
+    }
+  }
+}

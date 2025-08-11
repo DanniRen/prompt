@@ -37,11 +37,13 @@ public enum ErrorCode {
     PROMPT_ACCESS_DENIED(2007, "无权限访问该提示词"),
     PROMPT_EXPORT_FAILED(2008, "提示词导出失败"),
     PROMPT_IMPORT_FAILED(2009, "提示词导入失败"),
-    PROMPT_UPDATE_FAILED(2009, "提示词更新失败"),
-    PROMPT_DELETE_FAILED(2010, "提示词删除失败"),
-    PROMPT_VERSION_FORMAT_ERROR(2011, "提示词版本格式不正确"),
-    PROMPT_VERSION_RESTORE_ERROR(2012, "提示词版本回退失败"),
-    PROMPT_VERSION_CREATE_FAILED(2013,"提示词版本创建失败"),
+    PROMPT_UPDATE_FAILED(2010, "提示词更新失败"),
+    PROMPT_DELETE_FAILED(2011, "提示词删除失败"),
+    PROMPT_VERSION_FORMAT_ERROR(2012, "提示词版本格式不正确"),
+    PROMPT_VERSION_RESTORE_ERROR(2013, "提示词版本回退失败"),
+    PROMPT_VERSION_CREATE_FAILED(2014, "提示词版本创建失败"),
+    PROMPT_OPTIMIZE_FAILED(2015, "提示词优化失败"),
+
     // 大模型相关(3000-3999)
     MODEL_API_KEY_MISSING(3001, "大模型API密钥缺失"),
     MODEL_API_CALL_FAILED(3002, "大模型API调用失败"),
@@ -58,14 +60,22 @@ public enum ErrorCode {
     VECTOR_SEARCH_FAILED(4003, "向量搜索失败"),
     VECTOR_INDEX_CREATION_FAILED(4004, "向量索引创建失败"),
 
+    // 对话相关(5000-5999)
+    CONVERSATION_NOT_FOUND(5001, "对话不存在"),
+    CONVERSATION_CREATE_FAILED(5002, "对话创建失败"),
+    CONVERSATION_SUMMARY_FAILED(5003, "对话生成摘要失败"),
+    CONVERSATION_ACCESS_DENIED(5004, "无该对话访问权限"),
+    CONVERSATION_RATE_FAILED(5005, "对话评分失败"),
+    CONVERSATION_DELETE_FAILED(5006, "对话删除失败"),
+    CONVERSATION_EXPORT_FAILED(5007, "对话导出失败"),
+    CONVERSATION_SESSION_ENDED(5008, "对话会话已结束"),
+    CONVERSATION_UPDATE_FAILED(5009, "对话更新失败"),
 
-    // 团队协作相关(5000-5999)
-    TEAM_NOT_FOUND(5001, "团队不存在"),
-    TEAM_MEMBER_NOT_FOUND(5002, "团队成员不存在"),
-    TEAM_MEMBER_ALREADY_EXISTS(5003, "团队成员已存在"),
-    TEAM_INVITATION_NOT_FOUND(5004, "团队邀请不存在"),
-    TEAM_PERMISSION_DENIED(5005, "团队权限不足"),
-    TEAM_SPACE_QUOTA_EXCEEDED(5006, "团队空间配额已超出"),
+    // 知识库相关错误(11000-11999)
+    KNOWLEDGE_NOT_FOUND(11001, "知识库条目不存在"),
+    KNOWLEDGE_BUILD_FAILED(11002, "知识库构建失败"),
+    KNOWLEDGE_SEARCH_FAILED(11003, "知识库搜索失败"),
+
 
     // 场景相关(6000-6999)
     SCENE_NOT_FOUND(6001, "分类场景不存在"),
@@ -98,6 +108,7 @@ public enum ErrorCode {
     THIRD_PARTY_AUTH_FAILED(9002, "第三方认证失败"),
     THIRD_PARTY_API_LIMIT(9003, "第三方API调用限制"),
     THIRD_PARTY_SERVICE_UNAVAILABLE(9004, "第三方服务不可用");
+
 
     private final Integer code;
     private final String message;
