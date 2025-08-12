@@ -43,8 +43,8 @@ public class AuthInterceptor implements HandlerInterceptor {
 
         Permission permissionClass = AnnotationUtils.findAnnotation(HandlerMethod.class, Permission.class);
         Permission permissionMethod = AnnotationUtils.findAnnotation(method, Permission.class);
-        if (permissionClass == null || permissionMethod == null) {
-
+        if (permissionClass == null && permissionMethod == null) {
+            // 不需要校验直接放行
             return true;
         }
 

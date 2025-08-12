@@ -95,7 +95,6 @@ public class ConversationServiceImpl implements ConversationService {
                     .totalTokenCount(0)
                     .createTime(LocalDateTime.now())
                     .updateTime(LocalDateTime.now())
-                    .lastActiveTime(LocalDateTime.now())
                     .isActive(true)
                     .build();
             mongoTemplate.save(session);
@@ -175,6 +174,8 @@ public class ConversationServiceImpl implements ConversationService {
             long responseTime = System.currentTimeMillis() - startTime;
             // 记录本次的token用量
             Integer tokens = response.getMetadata().getUsage().getTotalTokens();
+
+            // 更新会话的token用量和轮次
             session.setTotalTokenCount(session.getTotalTokenCount() + tokens);
             session.setTotalTurns(turn);
 
@@ -192,7 +193,7 @@ public class ConversationServiceImpl implements ConversationService {
             try {
                 mongoTemplate.update(ConversationSession.class)
                         .matching(Criteria.where("_id").is(session.getId()))
-                        .apply(new Update().set("turn", turn))
+                        .apply(new Update().set("totalTurns", session.getTotalTurns()).set("totalTokenCount", session.getTotalTokenCount()))
                         .first();
                 log.info("会话总轮次更新成功：会话id={}, 轮次={}", session.getId(), turn);
             } catch (Exception e) {
@@ -228,7 +229,7 @@ public class ConversationServiceImpl implements ConversationService {
         }
         
         // 智能选择相关历史对话
-        List<ConversationMessage> relevantHistory = selectRelevantHistory(history, userInput, currentTurn);
+        List<ConversationMessage> relevantHistory = selectRelevantHistory(history, session.getId(), userInput, currentTurn);
         
         // 动态上下文压缩
         List<String> compressedHistory = compressContext(relevantHistory, session.getModelProvider());
@@ -250,7 +251,7 @@ public class ConversationServiceImpl implements ConversationService {
         return contextBuilder.toString();
     }
 
-    private List<ConversationMessage> selectRelevantHistory(List<ConversationMessage> history, String userInput, int currentTurn) {
+    private List<ConversationMessage> selectRelevantHistory(List<ConversationMessage> history, String sessionId, String userInput, int currentTurn) {
         if (history.isEmpty()) {
             return Collections.emptyList();
         }
@@ -266,7 +267,6 @@ public class ConversationServiceImpl implements ConversationService {
         
         try {
             // 使用Chroma进行相似性搜索
-            String sessionId = previousHistory.get(0).getSessionId();
             List<ConversationMessage> similarMessages = vectorService.searchSimilarMessages(
                 sessionId, userInput, 10); // 多搜索几条，增加选择空间
             
@@ -287,77 +287,7 @@ public class ConversationServiceImpl implements ConversationService {
         } catch (Exception e) {
             log.warn("Chroma搜索失败", e);
             return List.of();
-//            return fallbackToTraditionalMethod(previousHistory, userInput, currentTurn);
         }
-    }
-
-    private List<ConversationMessage> fallbackToTraditionalMethod(List<ConversationMessage> history, String userInput, int currentTurn) {
-        try {
-            // 获取当前用户输入的向量表示
-            float[] userInputEmbedding = embeddingGenerator.generate(userInput);
-            
-            // 计算每条历史消息与当前输入的相关度
-            List<HistoryScore> historyScores = new ArrayList<>();
-            for (ConversationMessage msg : history) {
-                double relevanceScore = calculateRelevance(userInputEmbedding, msg);
-                historyScores.add(new HistoryScore(msg, relevanceScore));
-            }
-            
-            // 按相关度排序，选择最相关的几条
-            return historyScores.stream()
-                    .sorted((a, b) -> Double.compare(b.score, a.score))
-                    .limit(4) // 选择最相关的4条历史记录
-                    .map(HistoryScore::getMessage)
-                    .collect(Collectors.toList());
-                    
-        } catch (Exception e) {
-            log.warn("相关度计算失败，使用最近的历史记录", e);
-            // 如果相关度计算失败，使用最近的历史记录
-            int recentCount = Math.min(4, history.size());
-            return history.subList(history.size() - recentCount, history.size());
-        }
-    }
-
-
-    private double calculateRelevance(float[] userInputEmbedding, ConversationMessage message) {
-        try {
-            // 计算用户输入的相关度
-            float[] userMsgEmbedding = embeddingGenerator.generate(message.getUserInput());
-            double userRelevance = calculateCosineSimilarity(userInputEmbedding, userMsgEmbedding);
-            
-            // 计算模型回复的相关度
-            float[] modelMsgEmbedding = embeddingGenerator.generate(message.getModelResponse());
-            double modelRelevance = calculateCosineSimilarity(userInputEmbedding, modelMsgEmbedding);
-            
-            // 综合相关度（用户输入权重更高）
-            return userRelevance * 0.7 + modelRelevance * 0.3;
-            
-        } catch (Exception e) {
-            log.warn("相关度计算失败", e);
-            return 0.0;
-        }
-    }
-
-    private double calculateCosineSimilarity(float[] vec1, float[] vec2) {
-        if (vec1.length != vec2.length) {
-            return 0.0;
-        }
-        
-        double dotProduct = 0.0;
-        double norm1 = 0.0;
-        double norm2 = 0.0;
-        
-        for (int i = 0; i < vec1.length; i++) {
-            dotProduct += vec1[i] * vec2[i];
-            norm1 += vec1[i] * vec1[i];
-            norm2 += vec2[i] * vec2[i];
-        }
-        
-        if (norm1 == 0.0 || norm2 == 0.0) {
-            return 0.0;
-        }
-        
-        return dotProduct / (Math.sqrt(norm1) * Math.sqrt(norm2));
     }
 
     private List<String> compressContext(List<ConversationMessage> history, String modelProvider) {
@@ -383,7 +313,6 @@ public class ConversationServiceImpl implements ConversationService {
             if (usedTokens + estimatedTokens > availableTokens) {
                 if (usedTokens < availableTokens * 0.8) {
                     // 还有足够空间，尝试压缩
-
                     contextEntry = compressLongContext(contextEntry, modelProvider);
                     estimatedTokens = estimateTokenCount(contextEntry);
                     
@@ -448,28 +377,10 @@ public class ConversationServiceImpl implements ConversationService {
         }
     }
 
-    private static class HistoryScore {
-        private final ConversationMessage message;
-        private final double score;
-        
-        public HistoryScore(ConversationMessage message, double score) {
-            this.message = message;
-            this.score = score;
-        }
-        
-        public ConversationMessage getMessage() {
-            return message;
-        }
-        
-        public double getScore() {
-            return score;
-        }
-    }
-
     @Override
     public ApiBaseResponse endConversationSession(String sessionId, String userId) {
         try {
-            Query query = new Query(Criteria.where("sessionId").is(sessionId).and("userId").is(userId));
+            Query query = new Query(Criteria.where("_id").is(sessionId).and("userId").is(userId));
             ConversationSession session = mongoTemplate.findById(sessionId, ConversationSession.class);
 
             Update update = new Update().set("isActive", false)

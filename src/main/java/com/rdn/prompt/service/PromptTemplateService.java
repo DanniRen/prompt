@@ -24,6 +24,7 @@ public class PromptTemplateService {
         
         return templateCache.computeIfAbsent(scene, key -> {
             String template = templateConfig.getTemplate(key);
+
             if (template == null) {
                 log.warn("Template not found for scene: {}, using basic template", key);
                 template = templateConfig.getTemplate("basic");
@@ -47,6 +48,7 @@ public class PromptTemplateService {
             case "写作":
                 return getTemplate("writing");
             case "analysis":
+            case "data analysis":
             case "数据分析":
                 return getTemplate("analysis");
             default:

@@ -1,23 +1,25 @@
 package com.rdn.prompt.controller;
 
+import com.rdn.prompt.auth.Permission;
+import com.rdn.prompt.auth.RoleEnum;
 import com.rdn.prompt.entity.Prompt;
 import com.rdn.prompt.entity.PromptVersion;
 import com.rdn.prompt.entity.dto.PageResult;
 import com.rdn.prompt.entity.dto.PromptDTO;
+import com.rdn.prompt.entity.dto.PromptOptimizeRequest;
 import com.rdn.prompt.entity.vo.PromptVO;
 import com.rdn.prompt.enums.ErrorCode;
-import com.rdn.prompt.service.ElasticService;
-import com.rdn.prompt.service.PromptService;
-import com.rdn.prompt.service.PromptVersionService;
-import com.rdn.prompt.service.SearchService;
+import com.rdn.prompt.service.*;
 import com.rdn.prompt.util.ApiBaseResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -49,6 +51,7 @@ public class PromptController {
         return ApiBaseResponse.success(promptList);
     }
 
+    @Permission({RoleEnum.USER, RoleEnum.ADMIN})
     @ApiOperation(value = "创建prompt", notes = "创建prompt")
     @PostMapping
     public ApiBaseResponse createPrompt(@RequestBody PromptDTO promptDTO, HttpServletRequest request) {
@@ -66,6 +69,7 @@ public class PromptController {
         return ApiBaseResponse.success(promptVO);
     }
 
+    @Permission({RoleEnum.USER, RoleEnum.ADMIN})
     @ApiOperation(value = "更新prompt", notes = "更新prompt")
     @PutMapping
     public ApiBaseResponse updatePrompt(@RequestBody PromptDTO promptDTO, HttpServletRequest request) {
@@ -73,6 +77,7 @@ public class PromptController {
         return promptService.updatePrompt(promptDTO, userId);
     }
 
+    @Permission({RoleEnum.USER, RoleEnum.ADMIN})
     @ApiOperation(value = "删除prompt", notes = "删除prompt")
     @DeleteMapping("/{id}")
     public ApiBaseResponse deletePrompt(@PathVariable String id, HttpServletRequest request) {
@@ -106,6 +111,7 @@ public class PromptController {
         return ApiBaseResponse.success(promptVOList);
     }
 
+    @Permission({RoleEnum.USER, RoleEnum.ADMIN})
     @ApiOperation(value = "点赞", notes = "对某个prompt点赞")
     @PostMapping("/{id}/like")
     public ApiBaseResponse likePrompt(@PathVariable String id, HttpServletRequest request) {
@@ -119,6 +125,7 @@ public class PromptController {
      * @param request
      * @return
      */
+    @Permission({RoleEnum.USER, RoleEnum.ADMIN})
     @ApiOperation(value = "取消点赞", notes = "对某个prompt取消点赞")
     @PostMapping("/{id}/unlike")
     public ApiBaseResponse unlikePrompt(@PathVariable String id, HttpServletRequest request) {
@@ -132,6 +139,7 @@ public class PromptController {
      * @param request
      * @return
      */
+    @Permission({RoleEnum.USER, RoleEnum.ADMIN})
     @ApiOperation(value = "收藏", notes = "对某个prompt收藏")
     @PostMapping("/{id}/star")
     public ApiBaseResponse starPrompt(@PathVariable String id, HttpServletRequest request) {
@@ -145,6 +153,7 @@ public class PromptController {
      * @param request
      * @return
      */
+    @Permission({RoleEnum.USER, RoleEnum.ADMIN})
     @ApiOperation(value = "取消收藏", notes = "对某个prompt取消收藏")
     @PostMapping("/{id}/unstar")
     public ApiBaseResponse unstarPrompt(@PathVariable String id, HttpServletRequest request) {
@@ -168,6 +177,7 @@ public class PromptController {
         return ApiBaseResponse.success(promptVersion);
     }
 
+    @Permission({RoleEnum.USER, RoleEnum.ADMIN})
     @ApiOperation(value = "版本回退", notes = "将prompt回退到指定版本")
     @PostMapping("/{id}/restore/{version}")
     public ApiBaseResponse restorePrompt(@PathVariable String id, @PathVariable String version, HttpServletRequest request) {
@@ -180,6 +190,19 @@ public class PromptController {
     public ApiBaseResponse getVersionHistory(@PathVariable String id) {
         List<PromptVersion> versions = versionService.getPromptVersions(id);
         return ApiBaseResponse.success(versions);
+    }
+
+    @Permission({RoleEnum.USER, RoleEnum.ADMIN})
+    @ApiOperation(value = "优化Prompt", notes = "基于用户输入的基础想法，生成优化的完整prompt")
+    @PostMapping("/optimize")
+    public ApiBaseResponse optimizePrompt(
+            @ApiParam(value = "优化请求参数", required = true) @RequestBody PromptOptimizeRequest request,
+            HttpServletRequest httpRequest) {
+
+        String userId = httpRequest.getAttribute("userId").toString();
+        log.info("开始优化Prompt: userId={}, basicPrompt={}", userId, request.getBasicPrompt());
+
+        return promptService.optimizePrompt(userId, request);
     }
 
 }

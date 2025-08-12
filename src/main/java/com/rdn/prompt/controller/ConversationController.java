@@ -1,5 +1,7 @@
 package com.rdn.prompt.controller;
 
+import com.rdn.prompt.auth.Permission;
+import com.rdn.prompt.auth.RoleEnum;
 import com.rdn.prompt.entity.ConversationMessage;
 import com.rdn.prompt.entity.ConversationSession;
 import com.rdn.prompt.entity.Prompt;
@@ -30,6 +32,7 @@ public class ConversationController {
     private PromptService promptService;
 
     // === 对话会话管理 ===
+    @Permission({RoleEnum.USER, RoleEnum.ADMIN})
     @ApiOperation(value = "创建对话会话", notes = "创建一个新的多轮对话会话")
     @PostMapping("/sessions")
     public ApiBaseResponse createConversationSession(
@@ -44,6 +47,7 @@ public class ConversationController {
         return conversationService.startNewConversation(userId, prompt, modelProvider);
     }
 
+    @Permission({RoleEnum.USER, RoleEnum.ADMIN})
     @ApiOperation(value = "获取用户的对话会话列表", notes = "分页获取用户的所有对话会话")
     @GetMapping("/sessions")
     public ApiBaseResponse getUserConversationSessions(
@@ -56,6 +60,7 @@ public class ConversationController {
     }
 
 
+    @Permission({RoleEnum.USER, RoleEnum.ADMIN})
     @ApiOperation(value = "删除对话会话", notes = "删除指定的对话会话及其所有对话记录")
     @DeleteMapping("/sessions/{sessionId}")
     public ApiBaseResponse deleteConversationSession(
@@ -65,6 +70,7 @@ public class ConversationController {
         return conversationService.deleteConversationSession(sessionId, userId);
     }
 
+    @Permission({RoleEnum.USER, RoleEnum.ADMIN})
     @ApiOperation(value = "结束对话会话", notes = "标记对话会话为已结束状态")
     @PostMapping("/sessions/{sessionId}/end")
     public ApiBaseResponse endConversationSession(
@@ -76,6 +82,7 @@ public class ConversationController {
 
     // === 多轮对话交互 ===
 
+    @Permission({RoleEnum.USER, RoleEnum.ADMIN})
     @ApiOperation(value = "继续对话", notes = "在指定会话中继续新一轮对话")
     @PostMapping("/sessions/{sessionId}/continue")
     public ApiBaseResponse continueConversation(
@@ -86,6 +93,7 @@ public class ConversationController {
         return conversationService.continueConversation(sessionId, userId, userInput);
     }
 
+    @Permission({RoleEnum.USER, RoleEnum.ADMIN})
     @ApiOperation(value = "获取对话历史", notes = "获取指定会话的完整对话历史")
     @GetMapping("/sessions/{sessionId}/history")
     public ApiBaseResponse getConversationHistory(
@@ -96,6 +104,7 @@ public class ConversationController {
         return ApiBaseResponse.success(history);
     }
 
+    @Permission({RoleEnum.USER, RoleEnum.ADMIN})
     @ApiOperation(value = "对话评分", notes = "对指定对话进行评分和反馈")
     @PostMapping("/{conversationId}/rate")
     public ApiBaseResponse rateConversation(

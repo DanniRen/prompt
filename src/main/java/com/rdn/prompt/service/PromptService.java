@@ -3,6 +3,7 @@ package com.rdn.prompt.service;
 import com.rdn.prompt.entity.Prompt;
 import com.rdn.prompt.entity.dto.PageResult;
 import com.rdn.prompt.entity.dto.PromptDTO;
+import com.rdn.prompt.entity.dto.PromptOptimizeRequest;
 import com.rdn.prompt.entity.vo.PromptVO;
 import com.rdn.prompt.util.ApiBaseResponse;
 
@@ -34,4 +35,6 @@ public interface PromptService {
 
     ApiBaseResponse restore(String promptId, String version);
     ApiBaseResponse addReview(String promptId, String userId, String comment, int rating);
+
+    ApiBaseResponse optimizePrompt(String userId, PromptOptimizeRequest request);
 }

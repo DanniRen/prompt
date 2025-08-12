@@ -41,10 +41,6 @@
         bsonType: 'date',
         description: '会话更新时间，每次修改时更新该时间戳'
       },
-      lastActiveTime: {
-        bsonType: 'date',
-        description: '会话最后活跃的时间，每次结束会话时更新该时间戳'
-      },
       totalTurns: {
         bsonType: 'int',
         "description": '对话的总轮次'

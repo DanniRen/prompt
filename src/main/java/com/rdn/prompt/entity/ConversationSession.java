@@ -28,7 +28,6 @@ public class ConversationSession {
     // 会话的元数据信息
     private LocalDateTime createTime;
     private LocalDateTime updateTime;
-    private LocalDateTime lastActiveTime; // 最后活跃时间
 
     private int totalTurns; // 对话总轮次
     private int totalTokenCount; // 总token消耗

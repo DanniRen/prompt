@@ -31,8 +31,13 @@ public class PromptTagServiceImpl implements PromptTagService {
 
     @Override
     public List<PromptTag> getListByIds(List<String> tagIds) {
-        mongoTemplate.findById(tagIds, PromptTag.class);
-        return List.of();
+        if (tagIds == null || tagIds.isEmpty()) {
+            return List.of();
+        }
+        return mongoTemplate.find(
+            new Query(Criteria.where("_id").in(tagIds)), 
+            PromptTag.class
+        );
     }
 
     @Override

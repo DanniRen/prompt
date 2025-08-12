@@ -58,10 +58,10 @@ public class ChromaVectorServiceImpl implements VectorService {
             metadata.put("tags", prompt.getTagNames());
             Document document = new Document(prompt.getContent(), metadata);
             promptVectorStore.add(List.of(document));
-            log.info("成功存储prompt嵌入向量到chroma：promptId={}", prompt.getId());
+            log.info("【chroma】成功存储prompt嵌入向量到chroma：promptId={}", prompt.getId());
         } catch (Exception e) {
-            log.error("存储prompt嵌入向量到chroma失败：promptId={}", prompt.getId(), e);
-            throw new RuntimeException("存储prompt嵌入向量到chroma失败", e);
+            log.error("【chroma】存储prompt嵌入向量到chroma失败：promptId={}", prompt.getId(), e);
+            throw new RuntimeException("【chroma】存储prompt嵌入向量到chroma失败", e);
         }
     }
 
@@ -76,11 +76,11 @@ public class ChromaVectorServiceImpl implements VectorService {
                     .stream()
                     .map(document -> document.getMetadata().get("promptId").toString())
                     .collect(Collectors.toList());
-            log.info("语义检索完成，查询词：{}，返回结果数：{}", query, result.size());
+            log.info("【chroma】语义检索完成，查询词：{}，返回结果数：{}", query, result.size());
             return result;
         } catch (Exception e) {
-            log.error("语义检索失败：query={}", query, e);
-            throw new RuntimeException("语义检索失败", e);
+            log.error("【chroma】语义检索失败：query={}", query, e);
+            throw new RuntimeException("【chroma】语义检索失败", e);
         }
     }
 
@@ -99,11 +99,11 @@ public class ChromaVectorServiceImpl implements VectorService {
             
             if (!documents.isEmpty()) {
                 promptVectorStore.delete(documents.getFirst().getId());
-                log.info("成功删除chroma中的prompt嵌入：promptId={}", promptId);
+                log.info("【chroma】成功删除chroma中的prompt嵌入：promptId={}", promptId);
             }
         } catch (Exception e) {
-            log.error("删除chroma中的prompt嵌入失败：promptId={}", promptId, e);
-            throw new RuntimeException("删除chroma中的prompt嵌入失败", e);
+            log.error("【chroma】删除chroma中的prompt嵌入失败：promptId={}", promptId, e);
+            throw new RuntimeException("【chroma】删除chroma中的prompt嵌入失败", e);
         }
     }
 
@@ -114,12 +114,12 @@ public class ChromaVectorServiceImpl implements VectorService {
         try {
             Document document = createConversationDocument(message);
             conversationVectorStore.add(List.of(document));
-            log.info("成功存储对话消息向量到chroma：sessionId={}, turn={}", 
+            log.info("【chroma】成功存储对话消息向量到chroma：sessionId={}, turn={}",
                 message.getSessionId(), message.getTurn());
         } catch (Exception e) {
-            log.error("存储对话消息向量到chroma失败：sessionId={}, turn={}", 
+            log.error("【chroma】存储对话消息向量到chroma失败：sessionId={}, turn={}",
                 message.getSessionId(), message.getTurn(), e);
-            throw new RuntimeException("存储对话消息向量到chroma失败", e);
+            throw new RuntimeException("【chroma】存储对话消息向量到chroma失败", e);
         }
     }
 
@@ -130,10 +130,10 @@ public class ChromaVectorServiceImpl implements VectorService {
                 .map(this::createConversationDocument)
                 .collect(Collectors.toList());
             conversationVectorStore.add(documents);
-            log.info("成功存储{}条对话消息向量到chroma", messages.size());
+            log.info("【chroma】成功存储{}条对话消息向量到chroma", messages.size());
         } catch (Exception e) {
-            log.error("批量存储对话消息向量到chroma失败", e);
-            throw new RuntimeException("批量存储对话消息向量到chroma失败", e);
+            log.error("【chroma】批量存储对话消息向量到chroma失败", e);
+            throw new RuntimeException("【chroma】批量存储对话消息向量到chroma失败", e);
         }
     }
 
@@ -152,12 +152,12 @@ public class ChromaVectorServiceImpl implements VectorService {
                 .map(this::documentToConversationMessage)
                 .collect(Collectors.toList());
             
-            log.info("相似对话搜索完成：sessionId={}, query={}, 返回结果数={}", 
+            log.info("【chroma】相似对话搜索完成：sessionId={}, query={}, 返回结果数={}",
                 sessionId, query, messages.size());
             return messages;
         } catch (Exception e) {
-            log.error("相似对话搜索失败：sessionId={}, query={}", sessionId, query, e);
-            throw new RuntimeException("相似对话搜索失败", e);
+            log.error("【chroma】相似对话搜索失败：sessionId={}, query={}", sessionId, query, e);
+            throw new RuntimeException("【chroma】相似对话搜索失败", e);
         }
     }
 
@@ -177,12 +177,12 @@ public class ChromaVectorServiceImpl implements VectorService {
                     .map(Document::getId)
                     .collect(Collectors.toList());
                 conversationVectorStore.delete(documentIds);
-                log.info("成功删除会话的所有向量数据：sessionId={}, 删除数量={}",
+                log.info("【chroma】成功删除会话的所有向量数据：sessionId={}, 删除数量={}",
                     sessionId, documents.size());
             }
         } catch (Exception e) {
-            log.error("删除会话向量数据失败：sessionId={}", sessionId, e);
-            throw new RuntimeException("删除会话向量数据失败", e);
+            log.error("【chroma】删除会话向量数据失败：sessionId={}", sessionId, e);
+            throw new RuntimeException("【chroma】删除会话向量数据失败", e);
         }
     }
 
